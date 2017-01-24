@@ -10,6 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
 /**
  * An activity representing a single Message detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
@@ -29,8 +33,12 @@ public class MessageDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+                FirebaseMessaging.getInstance().send(
+                    new RemoteMessage.Builder("121065227260@gcm.googleapis.com")
+                        .setMessageId(String.valueOf(System.currentTimeMillis()))
+                        .addData("message", "Hello")
+                        .build()
+                );
             }
         });
 
