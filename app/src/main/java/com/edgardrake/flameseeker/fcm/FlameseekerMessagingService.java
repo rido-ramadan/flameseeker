@@ -16,6 +16,10 @@ import com.edgardrake.flameseeker.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class FlameseekerMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "Flameseeker.FCM";
@@ -28,7 +32,8 @@ public class FlameseekerMessagingService extends FirebaseMessagingService {
         final String title = remoteMessage.getNotification().getTitle();
         final String message = remoteMessage.getNotification().getBody();
         final String uri = remoteMessage.getData().get("uri");
-        final Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.notification_image);
+        final Bitmap image = remoteMessage.getData().get("image") != null?
+            downloadBitmap(remoteMessage.getData().get("image")) : null;
 
         sendNotification(title, message, image, uri);
     }
@@ -43,6 +48,7 @@ public class FlameseekerMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+            .setSmallIcon(R.drawable.ic_flameseeker)
             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_flameseeker))
             .setContentTitle(title)
             .setContentText(message)
@@ -62,4 +68,23 @@ public class FlameseekerMessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(requestCode, notificationBuilder.build());
     }
+
+    /*
+    *To get a Bitmap image from the URL received
+    * */
+    private Bitmap downloadBitmap(String imageURL) {
+        try {
+            URL url = new URL(imageURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            return bitmap;
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+            return null;
+        }
+    }
+
 }
