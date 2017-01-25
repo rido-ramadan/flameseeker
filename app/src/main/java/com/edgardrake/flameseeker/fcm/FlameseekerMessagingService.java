@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.edgardrake.flameseeker.MessageListActivity;
+import com.edgardrake.flameseeker.messaging.MessageListActivity;
 import com.edgardrake.flameseeker.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

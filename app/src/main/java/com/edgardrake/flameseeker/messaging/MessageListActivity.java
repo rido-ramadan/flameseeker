@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker;
+package com.edgardrake.flameseeker.messaging;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.edgardrake.flameseeker.BaseActivity;
+import com.edgardrake.flameseeker.R;
+import com.edgardrake.flameseeker.authentication.AuthActivity;
 import com.edgardrake.flameseeker.localstorage.LocalStorage;
 import com.edgardrake.flameseeker.model.DummyContent;
 
@@ -29,7 +32,7 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class MessageListActivity extends AppCompatActivity {
+public class MessageListActivity extends BaseActivity {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -50,8 +53,7 @@ public class MessageListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+                AuthActivity.startThisActivity(getActivity());
             }
         });
 
