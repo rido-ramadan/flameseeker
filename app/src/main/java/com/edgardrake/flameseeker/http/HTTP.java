@@ -15,6 +15,7 @@ import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -26,12 +27,30 @@ import okhttp3.Response;
 public class HTTP {
 
     private static final String TAG = "HTTP-Requestor";
-
+    /**
+     * CONFIG_SHOW_TOAST: set true for enable show toast on error, else false for silent failure
+     */
     private static final boolean CONFIG_SHOW_TOAST = true;
+    /**
+     * CONFIG_MANAGED_PER_CONTEXT: set true to enable per activity/fragment HTTP queue requester,
+     * or false to enable request from a single queue per application. Single queue per activity
+     * means request can be cancelled halfway if the activity is closed (not switch to front).
+     * Single queue per app means no request can be cancelled halfway.
+     */
+    private static final boolean CONFIG_MANAGED_PER_CONTEXT = true;
 
     public interface RequestCallback {
         void onSuccess(String response) throws IOException;
         void onFailure(IOException e);
+    }
+
+    private static OkHttpClient singletonHttpClient = null;
+
+    protected static OkHttpClient getSingetonHttpClient() {
+        if (singletonHttpClient == null) {
+            singletonHttpClient = new OkHttpClient();
+        }
+        return singletonHttpClient;
     }
 
     /**
@@ -46,7 +65,9 @@ public class HTTP {
     private static void call(final HttpRequester requester, Request request,
                                final RequestCallback callback) {
 
-        requester.getHttpClient().newCall(request).enqueue(new Callback() {
+        final OkHttpClient httpClient = CONFIG_MANAGED_PER_CONTEXT?
+            requester.getHttpClient() : getSingetonHttpClient();
+        httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
                 requester.getMainHandler().post(new Runnable() {
