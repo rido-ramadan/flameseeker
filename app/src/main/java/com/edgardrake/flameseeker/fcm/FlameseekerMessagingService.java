@@ -69,9 +69,9 @@ public class FlameseekerMessagingService extends FirebaseMessagingService {
         notificationManager.notify(requestCode, notificationBuilder.build());
     }
 
-    /*
-    *To get a Bitmap image from the URL received
-    * */
+    /**
+     * To get a Bitmap image from the URL received
+     **/
     private Bitmap downloadBitmap(String imageURL) {
         try {
             URL url = new URL(imageURL);
