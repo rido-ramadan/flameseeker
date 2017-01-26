@@ -8,10 +8,16 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.edgardrake.flameseeker.BaseActivity;
 import com.edgardrake.flameseeker.R;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.io.IOException;
+
+import okhttp3.Response;
 
 /**
  * An activity representing a single Message detail screen. This
@@ -19,7 +25,7 @@ import com.google.firebase.messaging.RemoteMessage;
  * item details are presented side-by-side with a list of items
  * in a {@link MessageListActivity}.
  */
-public class MessageDetailActivity extends AppCompatActivity {
+public class MessageDetailActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +38,19 @@ public class MessageDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseMessaging.getInstance().send(
-                    new RemoteMessage.Builder("121065227260@gcm.googleapis.com")
-                        .setMessageId(String.valueOf(System.currentTimeMillis()))
-                        .addData("message", "Hello")
-                        .build()
-                );
+                GET("http://dev.prelo.id/api/app/version?app_type=android", null,
+                    new RequestCallback() {
+                        @Override
+                        public void onSuccess(String response) {
+                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(IOException e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                        }
+                    });
             }
         });
 
