@@ -1,12 +1,10 @@
-package com.edgardrake.flameseeker;
+package com.edgardrake.flameseeker.http;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
+
+import com.edgardrake.flameseeker.base.BaseActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,75 +15,41 @@ import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by Edgar Drake on 25-Jan-17.
+ * Created by Edgar Drake on 26-Jan-17.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public class HTTP {
+
+    private static final String TAG = "HTTP-Requestor";
+
+    private static final boolean CONFIG_SHOW_TOAST = true;
 
     public interface RequestCallback {
         void onSuccess(String response) throws IOException;
         void onFailure(IOException e);
     }
 
-    private OkHttpClient httpClient;
-    private Handler mainHandler;
-
-    public BaseActivity getActivity() {
-        return this;
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        httpClient = new OkHttpClient();
-        mainHandler = new Handler(Looper.getMainLooper());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        httpClient.dispatcher().cancelAll();
-        super.onDestroy();
-    }
-
     /**
      * Basic, barebone method of calling OkHTTP request. Most of the request parameter must be
      * handcrafted by developer.
+     * @param requester Fragment or activity which implement this which invokes this method.
      * @param request OkHTTP Request object.
      * @param callback Callback function to be called when request has finished. Must be implemented
-     *                 by hand in respective activity. {@link RequestCallback}
+     *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      * @see <a href="https://github.com/square/okhttp/wiki/Recipes">wiki/recipes</a>
      */
-    protected void call(Request request, final RequestCallback callback) {
-        httpClient.newCall(request).enqueue(new Callback() {
+    private static void call(final HttpRequester requester, Request request,
+                               final RequestCallback callback) {
+
+        requester.getHttpClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
-                mainHandler.post(new Runnable() {
+                requester.getMainHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         callback.onFailure(e);
@@ -95,14 +59,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                mainHandler.post(new Runnable() {
+                requester.getMainHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             callback.onSuccess(response.body().string());
                         } catch (IOException e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
+                            if (CONFIG_SHOW_TOAST) {
+                                Toast.makeText(requester.getContext(), e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                            }
+                            Log.e(TAG, "Error: " + e.getMessage());
                         }
                     }
                 });
@@ -111,34 +78,39 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * Wrapper method of GET request using {@link BaseActivity#call(Request, RequestCallback)}.
+     * Wrapper method of GET request using
+     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}.
      * Modified to be more rookie developer friendly.
+     * @param requester Fragment or activity which implement this which invokes this method.
      * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
      * @param headers Header of the request, in form of map of string
      * @param callback Callback function to be called when request has finished. Must be implemented
-     *                 by hand in respective activity. {@link RequestCallback}
+     *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      */
-    public void GET(String url, Map<String, String> headers, RequestCallback callback) {
+    public static void GET(HttpRequester requester, String url, Map<String, String> headers,
+                           RequestCallback callback) {
         Request.Builder builder = new Request.Builder().url(url);
         if (headers != null)
             for (String key : headers.keySet()) {
                 builder.addHeader(key, headers.get(key));
             }
         Request GET = builder.build();
-        call(GET, callback);
+        call(requester, GET, callback);
     }
 
     /**
-     * Wrapper method of POST request using {@link BaseActivity#call(Request, RequestCallback)}.
+     * Wrapper method of POST request using
+     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}.
      * Modified to be more rookie developer friendly.
+     * @param requester Fragment or activity which implement this which invokes this method.
      * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
      * @param headers Header of the request, in form of map of string
      * @param form Form body of the POST request, in form of map of string
      * @param callback Callback function to be called when request has finished. Must be implemented
-     *                 by hand in respective activity. {@link RequestCallback}
+     *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      */
-    public void POST(String url, Map<String, String> headers, Map<String, String> form,
-                     RequestCallback callback) {
+    public static void POST(HttpRequester requester, String url, Map<String, String> headers,
+                            Map<String, String> form, RequestCallback callback) {
         FormBody.Builder formBody = new FormBody.Builder();
         if (form != null)
             for (String key : form.keySet()) {
@@ -152,21 +124,24 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
 
         Request POST = builder.post(formBody.build()).build();
-        call(POST, callback);
+        call(requester, POST, callback);
     }
 
     /**
      * Wrapper method of multipart POST request using
-     * {@link BaseActivity#call(Request, RequestCallback)}. Modified to be more rookie developer
+     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}. Modified to be more developer
      * friendly.
+     * @param requester Fragment or activity which implement this which invokes this method.
      * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
      * @param headers Header of the request, in form of map of string
      * @param form Form body of the POST request, in form of map of string
+     * @param files Files to be uploaded via multipart POST request, in form of map of files
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link RequestCallback}
      */
-    public void POST(String url, Map<String, String> headers, Map<String, String> form,
-                     Map<String, File> files, RequestCallback callback) {
+    public static void POST(HttpRequester requester, String url, Map<String, String> headers,
+                            Map<String, String> form, Map<String, File> files,
+                            RequestCallback callback) {
         MultipartBody.Builder multipartBody = new MultipartBody.Builder();
         if (form != null)
             for (String key : form.keySet()) {
@@ -189,6 +164,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
 
         Request POST = builder.post(multipartBody.build()).build();
-        call(POST, callback);
+        call(requester, POST, callback);
     }
 }

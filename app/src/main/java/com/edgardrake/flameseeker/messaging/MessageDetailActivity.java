@@ -5,19 +5,15 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.edgardrake.flameseeker.BaseActivity;
+import com.edgardrake.flameseeker.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
+import com.edgardrake.flameseeker.http.HTTP;
 
 import java.io.IOException;
-
-import okhttp3.Response;
 
 /**
  * An activity representing a single Message detail screen. This
@@ -38,8 +34,8 @@ public class MessageDetailActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GET("http://dev.prelo.id/api/app/version?app_type=android", null,
-                    new RequestCallback() {
+                HTTP.GET(getActivity(), "http://dev.prelo.id/api/app/version?app_type=android",
+                    null, new HTTP.RequestCallback() {
                         @Override
                         public void onSuccess(String response) {
                             Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
