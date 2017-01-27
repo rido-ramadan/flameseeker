@@ -1,4 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'idea'
+
+def jsonFile = rootProject.file("app/google-services.json")
+def servicesJSON = new groovy.json.JsonSlurper().parseText(jsonFile.text)
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 25
@@ -11,6 +19,14 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     packagingOptions {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
@@ -22,10 +38,20 @@ android {
         maxProcessCount 4
     }
     buildTypes {
+        debug {
+            resValue "string", "app_key", servicesJSON.client[0].api_key[0].current_key
+        }
         release {
+            resValue "string", "app_key", servicesJSON.client[0].api_key[0].current_key
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+idea {
+    module {
+        excludeDirs = [file('build')]
     }
 }
 
