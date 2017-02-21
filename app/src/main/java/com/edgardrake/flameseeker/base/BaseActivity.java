@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.edgardrake.flameseeker.http.HTTP;
 import com.edgardrake.flameseeker.http.HttpRequester;
 
 import java.io.File;
@@ -93,8 +94,6 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpRequ
     public OkHttpClient getHttpClient() {
         return httpClient;
     }
-
-
 
     /**
      * Basic, barebone method of calling OkHTTP request. Most of the request parameter must be
@@ -215,6 +214,16 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpRequ
         call(POST, callback);
     }
 
+    /**
+     * Wrapper method of JSON POST request using
+     * {@link BaseActivity#call(Request, RequestCallback)}. Modified to be more developer
+     * friendly.
+     * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
+     * @param headers Header of the request, in form of map of string
+     * @param json JSON file to be sent via POST request
+     * @param callback Callback function to be called when request has finished. Must be implemented
+     *                 by hand in respective activity. {@link RequestCallback}
+     */
     public void POST(String url, Map<String, String> headers, String json,
                      RequestCallback callback) {
         RequestBody body =
