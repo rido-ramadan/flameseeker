@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.edgardrake.flameseeker.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.http.HTTP;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -53,9 +54,12 @@ public class MessageDetailActivity extends BaseActivity {
 
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "key=" + getString(R.string.app_key));
-                HTTP.POST(getActivity(), "https://fcm.googleapis.com/fcm/send", headers,
-                    "{ 'data': { 'image': 'https://lh6.googleusercontent.com/-uwTOq3qBpHg/AAAAAAAAAAI/AAAAAAAAAKY/Mn9squkemEc/photo.jpg?sz=64', 'uri': 'https://prelo.co.id'} , 'to' : %s }",
+                headers.put("Authorization", "key=" + getString(R.string.server_key));
+
+                String json = getString(R.string.json_notification_fcm_payload, FirebaseInstanceId.getInstance().getToken());
+                Log.d("HTTP.POST.JSON", json);
+
+                HTTP.POST(getActivity(), "https://fcm.googleapis.com/fcm/send", headers, json,
                     new HTTP.RequestCallback() {
                         @Override
                         public void onSuccess(String response) throws IOException {

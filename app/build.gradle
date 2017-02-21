@@ -4,6 +4,10 @@ apply plugin: 'idea'
 def jsonFile = rootProject.file("app/google-services.json")
 def servicesJSON = new groovy.json.JsonSlurper().parseText(jsonFile.text)
 
+def firebaseKeyFile = rootProject.file("app/firebase.properties")
+def firebaseProperties = new Properties()
+firebaseProperties.load(new FileInputStream(firebaseKeyFile))
+
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
@@ -40,9 +44,11 @@ android {
     buildTypes {
         debug {
             resValue "string", "app_key", servicesJSON.client[0].api_key[0].current_key
+            resValue "string", "server_key", firebaseProperties['server_key']
         }
         release {
             resValue "string", "app_key", servicesJSON.client[0].api_key[0].current_key
+            resValue "string", "server_key", firebaseProperties['server_key']
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

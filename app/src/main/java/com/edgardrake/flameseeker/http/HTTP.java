@@ -38,7 +38,7 @@ public class HTTP {
      * means request can be cancelled halfway if the activity is closed (not switch to front).
      * Single queue per app means no request can be cancelled halfway.
      */
-    private static final boolean CONFIG_MANAGED_PER_CONTEXT = true;
+    private static final boolean CONFIG_MANAGED_PER_CONTEXT = false;
 
     public interface RequestCallback {
         void onSuccess(String response) throws IOException;
@@ -47,7 +47,7 @@ public class HTTP {
 
     private static OkHttpClient singletonHttpClient = null;
 
-    protected static OkHttpClient getSingetonHttpClient() {
+    protected static OkHttpClient getSingletonHttpClient() {
         if (singletonHttpClient == null) {
             singletonHttpClient = new OkHttpClient();
         }
@@ -67,7 +67,7 @@ public class HTTP {
                              final RequestCallback callback) {
 
         final OkHttpClient httpClient = CONFIG_MANAGED_PER_CONTEXT?
-            requester.getHttpClient() : getSingetonHttpClient();
+            requester.getHttpClient() : getSingletonHttpClient();
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
@@ -82,12 +82,13 @@ public class HTTP {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                logSuccess(response.body().string());
+                final String stringResponse = response.body().string();
+                logSuccess(stringResponse);
                 requester.getMainHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            callback.onSuccess(response.body().string());
+                            callback.onSuccess(stringResponse);
                         } catch (IOException e) {
                             logError(requester.getContext(), e);
                         }
@@ -187,6 +188,17 @@ public class HTTP {
         call(requester, POST, callback);
     }
 
+    /**
+     * Wrapper method of JSON POST request using
+     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}. Modified to be more developer
+     * friendly.
+     * @param requester Fragment or activity which implement this which invokes this method.
+     * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
+     * @param headers Header of the request, in form of map of string
+     * @param json JSON file to be sent via POST request
+     * @param callback Callback function to be called when request has finished. Must be implemented
+     *                 by hand in respective activity. {@link RequestCallback}
+     */
     public static void POST(HttpRequester requester, String url, Map<String, String> headers,
                             String json, RequestCallback callback) {
         RequestBody body =
