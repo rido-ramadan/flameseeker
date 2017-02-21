@@ -1,14 +1,23 @@
-package com.edgardrake.flameseeker;
+package com.edgardrake.flameseeker.messaging;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.edgardrake.flameseeker.base.BaseActivity;
+import com.edgardrake.flameseeker.R;
+import com.edgardrake.flameseeker.http.HTTP;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An activity representing a single Message detail screen. This
@@ -16,7 +25,7 @@ import android.view.MenuItem;
  * item details are presented side-by-side with a list of items
  * in a {@link MessageListActivity}.
  */
-public class MessageDetailActivity extends AppCompatActivity {
+public class MessageDetailActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +38,40 @@ public class MessageDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+//                HTTP.GET(getActivity(), "http://dev.prelo.id/api/app/version?app_type=android",
+//                    null, new HTTP.RequestCallback() {
+//                        @Override
+//                        public void onSuccess(String response) {
+//                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        @Override
+//                        public void onFailure(IOException e) {
+//                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
+//                                .show();
+//                        }
+//                    });
+
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=" + getString(R.string.server_key));
+
+                String json = getString(R.string.json_notification_fcm_payload, FirebaseInstanceId.getInstance().getToken());
+                Log.d("HTTP.POST.JSON", json);
+
+                HTTP.POST(getActivity(), "https://fcm.googleapis.com/fcm/send", headers, json,
+                    new HTTP.RequestCallback() {
+                        @Override
+                        public void onSuccess(String response) throws IOException {
+                            Log.d("Push", response);
+//                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(IOException e) {
+
+                        }
+                    });
             }
         });
 

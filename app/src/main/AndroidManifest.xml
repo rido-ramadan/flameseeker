@@ -1,40 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.edgardrake.flameseeker"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:installLocation="preferExternal">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".Flameseeker"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:fullBackupContent="true"
+        android:icon="@drawable/ic_flameseeker"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MessageListActivity"
+            android:name=".messaging.MessageListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".MessageDetailActivity"
+            android:name=".messaging.MessageDetailActivity"
             android:label="@string/title_message_detail"
-            android:parentActivityName=".MessageListActivity"
+            android:parentActivityName=".messaging.MessageListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.edgardrake.flameseeker.MessageListActivity"/>
+                android:value="com.edgardrake.flameseeker.messaging.MessageListActivity"/>
         </activity>
 
         <service
-            android:name=".fcm.FlameseekerInstanceIDService">
+            android:name=".fcm.FlameseekerInstanceIDService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
+        <service
+            android:name=".fcm.FlameseekerMessagingService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_flameseeker"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent"/>
+
+        <activity android:name=".authentication.AuthActivity">
+        </activity>
     </application>
 
 </manifest>
