@@ -1,5 +1,6 @@
 package com.edgardrake.flameseeker.http;
 
+import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -63,13 +64,14 @@ public class HTTP {
      * @see <a href="https://github.com/square/okhttp/wiki/Recipes">wiki/recipes</a>
      */
     private static void call(final HttpRequester requester, Request request,
-                               final RequestCallback callback) {
+                             final RequestCallback callback) {
 
         final OkHttpClient httpClient = CONFIG_MANAGED_PER_CONTEXT?
             requester.getHttpClient() : getSingetonHttpClient();
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
+                logError(requester.getContext(), e);
                 requester.getMainHandler().post(new Runnable() {
                     @Override
                     public void run() {
@@ -80,17 +82,14 @@ public class HTTP {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
+                logSuccess(response.body().string());
                 requester.getMainHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             callback.onSuccess(response.body().string());
                         } catch (IOException e) {
-                            if (CONFIG_SHOW_TOAST) {
-                                Toast.makeText(requester.getContext(), e.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                            }
-                            Log.e(TAG, "Error: " + e.getMessage());
+                            logError(requester.getContext(), e);
                         }
                     }
                 });
@@ -186,5 +185,31 @@ public class HTTP {
 
         Request POST = builder.post(multipartBody.build()).build();
         call(requester, POST, callback);
+    }
+
+    public static void POST(HttpRequester requester, String url, Map<String, String> headers,
+                            String json, RequestCallback callback) {
+        RequestBody body =
+            RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+
+        Request.Builder builder = new Request.Builder().url(url);
+        if (headers != null)
+            for (String key : headers.keySet()) {
+                builder.addHeader(key, headers.get(key));
+            }
+
+        Request POST = builder.post(body).build();
+        call(requester, POST, callback);
+    }
+
+    private static void logError(Context context, IOException e) {
+        if (CONFIG_SHOW_TOAST) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        Log.e(TAG, "Error: " + e.getMessage());
+    }
+
+    private static void logSuccess(String response) {
+        Log.d(TAG, "Success: " + response);
     }
 }

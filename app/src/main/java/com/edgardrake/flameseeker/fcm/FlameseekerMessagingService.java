@@ -26,9 +26,8 @@ public class FlameseekerMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.i(TAG, "From: " + remoteMessage.getFrom());
-        Log.i(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
-
+//        Log.i(TAG, "From: " + remoteMessage.getFrom());
+//        Log.i(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
         final String title = remoteMessage.getNotification().getTitle();
         final String message = remoteMessage.getNotification().getBody();
         final String uri = remoteMessage.getData().get("uri");

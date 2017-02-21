@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
@@ -14,6 +15,8 @@ import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.http.HTTP;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An activity representing a single Message detail screen. This
@@ -34,17 +37,35 @@ public class MessageDetailActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HTTP.GET(getActivity(), "http://dev.prelo.id/api/app/version?app_type=android",
-                    null, new HTTP.RequestCallback() {
+//                HTTP.GET(getActivity(), "http://dev.prelo.id/api/app/version?app_type=android",
+//                    null, new HTTP.RequestCallback() {
+//                        @Override
+//                        public void onSuccess(String response) {
+//                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        @Override
+//                        public void onFailure(IOException e) {
+//                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
+//                                .show();
+//                        }
+//                    });
+
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=" + getString(R.string.app_key));
+                HTTP.POST(getActivity(), "https://fcm.googleapis.com/fcm/send", headers,
+                    "{ 'data': { 'image': 'https://lh6.googleusercontent.com/-uwTOq3qBpHg/AAAAAAAAAAI/AAAAAAAAAKY/Mn9squkemEc/photo.jpg?sz=64', 'uri': 'https://prelo.co.id'} , 'to' : %s }",
+                    new HTTP.RequestCallback() {
                         @Override
-                        public void onSuccess(String response) {
-                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+                        public void onSuccess(String response) throws IOException {
+                            Log.d("Push", response);
+//                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onFailure(IOException e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
-                                .show();
+
                         }
                     });
             }

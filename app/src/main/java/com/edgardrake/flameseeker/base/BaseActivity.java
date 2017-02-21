@@ -214,4 +214,19 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpRequ
         Request POST = builder.post(multipartBody.build()).build();
         call(POST, callback);
     }
+
+    public void POST(String url, Map<String, String> headers, String json,
+                     RequestCallback callback) {
+        RequestBody body =
+            RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+
+        Request.Builder builder = new Request.Builder().url(url);
+        if (headers != null)
+            for (String key : headers.keySet()) {
+                builder.addHeader(key, headers.get(key));
+            }
+
+        Request POST = builder.post(body).build();
+        call(POST, callback);
+    }
 }
