@@ -18,6 +18,7 @@ import com.edgardrake.flameseeker.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.authentication.AuthActivity;
 import com.edgardrake.flameseeker.localstorage.LocalStorage;
+import com.edgardrake.flameseeker.maps.MapsActivity;
 import com.edgardrake.flameseeker.model.DummyContent;
 
 import java.util.List;
@@ -51,7 +52,8 @@ public class MessageListActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AuthActivity.startThisActivity(getActivity());
+                MapsActivity.startThisActivity(getContext());
+                // AuthActivity.startThisActivity(getActivity());
             }
         });
 
