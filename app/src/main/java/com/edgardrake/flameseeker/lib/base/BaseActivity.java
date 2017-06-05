@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.base;
+package com.edgardrake.flameseeker.lib.base;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,8 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.edgardrake.flameseeker.http.HTTP;
-import com.edgardrake.flameseeker.http.HttpRequester;
+import com.edgardrake.flameseeker.lib.http.HttpContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +30,7 @@ import okhttp3.Response;
  * Created by Edgar Drake on 25-Jan-17.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements HttpRequester {
+public abstract class BaseActivity extends AppCompatActivity implements HttpContext {
 
     public interface RequestCallback {
         void onSuccess(String response) throws IOException;

@@ -1,11 +1,11 @@
-package com.edgardrake.flameseeker.http;
+package com.edgardrake.flameseeker.lib.http;
 
 import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.edgardrake.flameseeker.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.base.BaseActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class HTTP {
      *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      * @see <a href="https://github.com/square/okhttp/wiki/Recipes">wiki/recipes</a>
      */
-    private static void call(final HttpRequester requester, Request request,
+    private static void call(final HttpContext requester, Request request,
                              final RequestCallback callback) {
 
         final OkHttpClient httpClient = CONFIG_MANAGED_PER_CONTEXT?
@@ -100,7 +100,7 @@ public class HTTP {
 
     /**
      * Wrapper method of GET request using
-     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}.
+     * {@link HTTP#call(HttpContext, Request, RequestCallback)}.
      * Modified to be more rookie developer friendly.
      * @param requester Fragment or activity which implement this which invokes this method.
      * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
@@ -108,7 +108,7 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      */
-    public static void GET(HttpRequester requester, String url, Map<String, String> headers,
+    public static void GET(HttpContext requester, String url, Map<String, String> headers,
                            RequestCallback callback) {
         Request.Builder builder = new Request.Builder().url(url);
         if (headers != null)
@@ -121,7 +121,7 @@ public class HTTP {
 
     /**
      * Wrapper method of POST request using
-     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}.
+     * {@link HTTP#call(HttpContext, Request, RequestCallback)}.
      * Modified to be more rookie developer friendly.
      * @param requester Fragment or activity which implement this which invokes this method.
      * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
@@ -130,7 +130,7 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      */
-    public static void POST(HttpRequester requester, String url, Map<String, String> headers,
+    public static void POST(HttpContext requester, String url, Map<String, String> headers,
                             Map<String, String> form, RequestCallback callback) {
         FormBody.Builder formBody = new FormBody.Builder();
         if (form != null)
@@ -150,7 +150,7 @@ public class HTTP {
 
     /**
      * Wrapper method of multipart POST request using
-     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}. Modified to be more developer
+     * {@link HTTP#call(HttpContext, Request, RequestCallback)}. Modified to be more developer
      * friendly.
      * @param requester Fragment or activity which implement this which invokes this method.
      * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
@@ -160,7 +160,7 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link RequestCallback}
      */
-    public static void POST(HttpRequester requester, String url, Map<String, String> headers,
+    public static void POST(HttpContext requester, String url, Map<String, String> headers,
                             Map<String, String> form, Map<String, File> files,
                             RequestCallback callback) {
         MultipartBody.Builder multipartBody = new MultipartBody.Builder();
@@ -190,7 +190,7 @@ public class HTTP {
 
     /**
      * Wrapper method of JSON POST request using
-     * {@link HTTP#call(HttpRequester, Request, RequestCallback)}. Modified to be more developer
+     * {@link HTTP#call(HttpContext, Request, RequestCallback)}. Modified to be more developer
      * friendly.
      * @param requester Fragment or activity which implement this which invokes this method.
      * @param url URL of the HTTP request. Must include protocol like HTTP/HTTPS
@@ -199,7 +199,7 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link RequestCallback}
      */
-    public static void POST(HttpRequester requester, String url, Map<String, String> headers,
+    public static void POST(HttpContext requester, String url, Map<String, String> headers,
                             String json, RequestCallback callback) {
         RequestBody body =
             RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);

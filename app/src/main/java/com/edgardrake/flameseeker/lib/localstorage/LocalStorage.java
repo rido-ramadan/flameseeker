@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.localstorage;
+package com.edgardrake.flameseeker.lib.localstorage;
 
 import android.content.Context;
 import android.content.SharedPreferences;

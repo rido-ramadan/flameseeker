@@ -14,10 +14,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.edgardrake.flameseeker.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
-import com.edgardrake.flameseeker.authentication.AuthActivity;
-import com.edgardrake.flameseeker.localstorage.LocalStorage;
+import com.edgardrake.flameseeker.lib.localstorage.LocalStorage;
 import com.edgardrake.flameseeker.maps.MapsActivity;
 import com.edgardrake.flameseeker.model.DummyContent;
 

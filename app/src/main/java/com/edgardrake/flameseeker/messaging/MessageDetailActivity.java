@@ -8,11 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.edgardrake.flameseeker.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
-import com.edgardrake.flameseeker.http.HTTP;
+import com.edgardrake.flameseeker.lib.http.HTTP;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;

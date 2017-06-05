@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.edgardrake.flameseeker.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
 
 public class AuthActivity extends BaseActivity
