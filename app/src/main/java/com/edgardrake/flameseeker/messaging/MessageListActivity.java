@@ -16,9 +16,10 @@ import android.widget.TextView;
 
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
-import com.edgardrake.flameseeker.lib.localstorage.LocalStorage;
+import com.edgardrake.flameseeker.lib.data.LocalStorage;
 import com.edgardrake.flameseeker.maps.MapsActivity;
 import com.edgardrake.flameseeker.model.DummyContent;
+import com.edgardrake.flameseeker.model.User;
 
 import java.util.List;
 
@@ -69,6 +70,13 @@ public class MessageListActivity extends BaseActivity {
         }
 
         Log.d("Flameseeker", LocalStorage.getInstance(this).getString(LocalStorage.FCM_TOKEN, "none"));
+
+        User user = User.getInstance(getContext());
+        user.edit()
+            .setUsername("regulus")
+            .setEmail("regulus@drake.com")
+            .setName("Regulus")
+            .commit();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

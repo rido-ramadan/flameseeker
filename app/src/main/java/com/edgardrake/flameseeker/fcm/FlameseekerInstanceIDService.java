@@ -2,7 +2,7 @@ package com.edgardrake.flameseeker.fcm;
 
 import android.util.Log;
 
-import com.edgardrake.flameseeker.lib.localstorage.LocalStorage;
+import com.edgardrake.flameseeker.lib.data.LocalStorage;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
