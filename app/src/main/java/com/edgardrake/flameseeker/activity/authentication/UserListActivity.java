@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
-import com.edgardrake.flameseeker.model.CurrentUser;
 import com.edgardrake.flameseeker.model.User;
 
 import java.util.ArrayList;
@@ -55,13 +54,13 @@ public class UserListActivity extends BaseActivity {
         });
     }
 
-    private void setDataset(List<User> source) {
+    public void setDataset(List<User> source) {
         dataset.clear();
         dataset.addAll(source);
         mUserList.getAdapter().notifyItemRangeInserted(0, source.size());
     }
 
-    private void addData(User user) {
+    public void addData(User user) {
         int insertionPosition = dataset.size();
         dataset.add(user);
         mUserList.getAdapter().notifyItemInserted(insertionPosition);
