@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.messaging;
+package com.edgardrake.flameseeker.activity.messaging;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.data.LocalStorage;
-import com.edgardrake.flameseeker.maps.MapsActivity;
+import com.edgardrake.flameseeker.activity.maps.MapsActivity;
 import com.edgardrake.flameseeker.model.DummyContent;
-import com.edgardrake.flameseeker.model.User;
+import com.edgardrake.flameseeker.model.CurrentUser;
 
 import java.util.List;
 
@@ -71,7 +71,7 @@ public class MessageListActivity extends BaseActivity {
 
         Log.d("Flameseeker", LocalStorage.getInstance(this).getString(LocalStorage.FCM_TOKEN, "none"));
 
-        User user = User.getInstance(getContext());
+        CurrentUser user = CurrentUser.getInstance(getContext());
         user.edit()
             .setUsername("regulus")
             .setEmail("regulus@drake.com")

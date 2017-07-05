@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.authentication;
+package com.edgardrake.flameseeker.activity.authentication;
 
 import android.content.Context;
 import android.content.Intent;

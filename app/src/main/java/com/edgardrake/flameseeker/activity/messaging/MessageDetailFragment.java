@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.messaging;
+package com.edgardrake.flameseeker.activity.messaging;
 
 import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;

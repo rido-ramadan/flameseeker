@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.maps;
+package com.edgardrake.flameseeker.activity.maps;
 
 import android.content.Context;
 import android.content.Intent;
