@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="localstorage_fcm_token">localstorage_fcm_token</string>
+    <string name="localstorage_auth_user">localstorage_auth_user</string>
+</resources>

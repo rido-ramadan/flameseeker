@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
+import com.edgardrake.flameseeker.model.AuthUser;
 import com.edgardrake.flameseeker.model.User;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ public class UserListActivity extends BaseActivity {
     RecyclerView mUserList;
     @BindView(R.id.add_user)
     FloatingActionButton mAddUserButton;
+    @BindView(R.id.edit_current_user)
+    FloatingActionButton mEditCurrentUser;
 
     private List<User> dataset;
 
@@ -50,6 +54,21 @@ public class UserListActivity extends BaseActivity {
                     .setName("User " + id)
                     .build();
                 addData(newUser);
+            }
+        });
+
+        mEditCurrentUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AuthUser user = AuthUser.getInstance(getContext());
+                String prevEmail = user.getEmail();
+                if (user.getEmail().equals("regulus@drake.com")) {
+                    user.edit().setEmail("rytlock@ascalon.com").commit();
+                } else {
+                    user.edit().setEmail("regulus@drake.com").commit();
+                }
+                String postEmail = user.getEmail();
+                Toast.makeText(getActivity(), String.format("Prev: %s\nPost: %s", prevEmail, postEmail), Toast.LENGTH_SHORT).show();
             }
         });
     }

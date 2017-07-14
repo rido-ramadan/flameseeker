@@ -19,7 +19,7 @@ import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.data.LocalStorage;
 import com.edgardrake.flameseeker.activity.maps.MapsActivity;
 import com.edgardrake.flameseeker.model.DummyContent;
-import com.edgardrake.flameseeker.model.CurrentUser;
+import com.edgardrake.flameseeker.model.AuthUser;
 
 import java.util.List;
 
@@ -69,9 +69,10 @@ public class MessageListActivity extends BaseActivity {
             mTwoPane = true;
         }
 
-        Log.d("Flameseeker", LocalStorage.getInstance(this).getString(LocalStorage.FCM_TOKEN, "none"));
+        Log.d("Flameseeker", LocalStorage.getInstance(this)
+            .getString(getString(R.string.localstorage_fcm_token), "none"));
 
-        CurrentUser user = CurrentUser.getInstance(getContext());
+        AuthUser user = AuthUser.getInstance(getContext());
         user.edit()
             .setUsername("regulus")
             .setEmail("regulus@drake.com")

@@ -2,6 +2,7 @@ package com.edgardrake.flameseeker.model;
 
 import android.content.Context;
 
+import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.data.LocalStorage;
 import com.edgardrake.flameseeker.lib.data.Serializer;
 import com.google.gson.annotations.Expose;
@@ -10,17 +11,21 @@ import com.google.gson.annotations.Expose;
  * Created by Edgar Drake on 12-Jun-17.
  */
 
-public class CurrentUser {
+public class AuthUser {
 
-    private static CurrentUser currentUser;
+    private static AuthUser currentUser;
 
-    public static CurrentUser getInstance(Context context) {
+    public static AuthUser getInstance(Context context) {
+        Context appContext = context.getApplicationContext();
         if (currentUser == null) {
-            String serialized = LocalStorage.getInstance(context.getApplicationContext())
+            String serialized = LocalStorage.getInstance(appContext)
                 .getString(LocalStorage.USER_OBJECT, null);
-            currentUser = serialized != null? Serializer.GSON().fromJson(serialized, CurrentUser.class):new CurrentUser();
+            currentUser = serialized != null?
+                Serializer.GSON().fromJson(serialized, AuthUser.class) : new AuthUser();
         }
-        currentUser.localEditor = new Editor(context.getApplicationContext());
+        if (currentUser.editor == null) {
+            currentUser.editor = new Editor(appContext);
+        }
         return currentUser;
     }
 
@@ -32,8 +37,6 @@ public class CurrentUser {
     private String username;
     @Expose
     private String name;
-
-    private Editor localEditor;
 
     public String getID() {
         return id;
@@ -51,53 +54,68 @@ public class CurrentUser {
         return name;
     }
 
+    private Editor editor;
+
     public Editor edit() {
-        return localEditor;
+        return editor;
     }
 
-    private CurrentUser() {}
+    private AuthUser() {}
 
     /**
      * Copy constructor of user
-     * @param source
+     * @param source Already constructed source user to be copied
      */
-    private CurrentUser(CurrentUser source) {
+    private AuthUser(AuthUser source) {
         this.id = source.id;
         this.username = source.username;
         this.email = source.email;
         this.name = source.name;
     }
 
+    private void commit(Editor editor) {
+        if (editor.email != null)       this.email = editor.email;
+        if (editor.username != null)    this.username = editor.username;
+        if (editor.name != null)        this.name = editor.name;
+    }
+
     public static class Editor {
 
-        private Context context;
-        private CurrentUser copyUser;
+        @Expose
+        private String email;
+        @Expose
+        private String username;
+        @Expose
+        private String name;
 
-        Editor(Context c) {
+        private Context context;
+
+        private Editor(Context c) {
             context = c;
-            copyUser = new CurrentUser(currentUser);
         }
 
         public Editor setEmail(String email) {
-            copyUser.email = email;
+            this.email = email;
             return this;
         }
 
         public Editor setUsername(String username) {
-            copyUser.username = username;
+            this.username = username;
             return this;
         }
 
         public Editor setName(String name) {
-            copyUser.name = name;
+            this.name = name;
             return this;
         }
 
         public void commit() {
-            String userObject = Serializer.GSON().toJson(copyUser);
+            currentUser.commit(this);
+
+            String userObject = Serializer.GSON().toJson(currentUser);
             LocalStorage.getInstance(context).edit()
-                .putString(LocalStorage.USER_OBJECT, userObject).apply();
-            currentUser = copyUser;
+                .putString(context.getString(R.string.localstorage_auth_user), userObject)
+                .apply();
         }
     }
 
