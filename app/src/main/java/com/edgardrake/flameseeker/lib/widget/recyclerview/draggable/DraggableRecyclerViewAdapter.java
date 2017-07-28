@@ -15,17 +15,16 @@ public abstract class DraggableRecyclerViewAdapter<T>
     implements IDraggableRecyclerViewAdapter {
 
     private List<T> dataset;
-
-    private ItemTouchHelper draggableHelper;
+    private ItemTouchHelper onDragListener;
 
     public DraggableRecyclerViewAdapter(List<T> dataset) {
         this.dataset = dataset;
-        draggableHelper = new ItemTouchHelper(new DraggableRecyclerViewCallback(this));
+        onDragListener = new ItemTouchHelper(new Callback(this));
     }
 
     public static void attachToRecyclerView(DraggableRecyclerViewAdapter adapter, RecyclerView view) {
         view.setAdapter(adapter);
-        adapter.draggableHelper.attachToRecyclerView(view);
+        adapter.onDragListener.attachToRecyclerView(view);
     }
 
     public void setDataset(List<T> dataset) {
@@ -53,5 +52,46 @@ public abstract class DraggableRecyclerViewAdapter<T>
         }
         notifyItemMoved(fromPosition, toPosition);
         return true;
+    }
+
+    /**
+     *
+     */
+    public class Callback extends ItemTouchHelper.Callback {
+
+        private final DraggableRecyclerViewAdapter adapter;
+
+        public Callback(DraggableRecyclerViewAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            return makeMovementFlags(dragFlags, 0/*swipeFlags*/);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                              RecyclerView.ViewHolder target) {
+            adapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            adapter.onItemDismiss(viewHolder.getAdapterPosition());
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isItemViewSwipeEnabled() {
+            return true;
+        }
     }
 }
