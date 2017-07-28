@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.widget.recyclerview.draggable.DraggableRecyclerViewAdapter;
 import com.edgardrake.flameseeker.model.AuthUser;
 import com.edgardrake.flameseeker.model.User;
 
@@ -40,7 +41,9 @@ public class UserListActivity extends BaseActivity {
         setContentView(R.layout.activity_user_list);
 
         dataset = new ArrayList<>();
-        mUserList.setAdapter(new UserListAdapter());
+//        mUserList.setAdapter(new UserListAdapter());
+        DraggableRecyclerViewAdapter.attachToRecyclerView(new DragAdapter(dataset), mUserList);
+
         mUserList.addItemDecoration(new DividerItemDecoration(getActivity(),
             DividerItemDecoration.VERTICAL));
 
@@ -121,6 +124,33 @@ public class UserListActivity extends BaseActivity {
             User user = dataset.get(position);
             holder.mUsername.setText(user.getUsername());
             holder.mUserEmail.setText(user.getEmail());
+        }
+    }
+
+    class DragAdapter extends DraggableRecyclerViewAdapter<User> {
+
+        DragAdapter(List<User> users) {
+            super(users);
+        }
+
+        @Override
+        public int getItemCount() {
+            return dataset.size();
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new UserHolder(parent);
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if (holder instanceof UserHolder) {
+                User user = dataset.get(position);
+                UserHolder userHolder = (UserHolder) holder;
+                userHolder.mUsername.setText(user.getUsername());
+                userHolder.mUserEmail.setText(user.getEmail());
+            }
         }
     }
 }
