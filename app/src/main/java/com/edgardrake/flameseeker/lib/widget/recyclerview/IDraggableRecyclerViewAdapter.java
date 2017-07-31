@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.lib.widget.recyclerview.draggable;
+package com.edgardrake.flameseeker.lib.widget.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 

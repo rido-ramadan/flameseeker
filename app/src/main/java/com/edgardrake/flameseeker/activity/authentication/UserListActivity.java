@@ -13,7 +13,8 @@ import android.widget.Toast;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
-import com.edgardrake.flameseeker.lib.widget.recyclerview.draggable.DraggableRecyclerViewAdapter;
+import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewAdapter;
+import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewHolder;
 import com.edgardrake.flameseeker.model.AuthUser;
 import com.edgardrake.flameseeker.model.User;
 
@@ -88,7 +89,7 @@ public class UserListActivity extends BaseActivity {
         mUserList.getAdapter().notifyItemInserted(insertionPosition);
     }
 
-    class UserHolder extends RecyclerView.ViewHolder {
+    class UserHolder extends DraggableRecyclerViewHolder {
         @BindView(R.id.user_profile_picture)
         ImageView mProfilePicture;
         @BindView(R.id.user_username)
@@ -97,33 +98,8 @@ public class UserListActivity extends BaseActivity {
         TextView mUserEmail;
 
         UserHolder(ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_user, parent, false));
+            super(parent, R.layout.row_user);
             ButterKnife.bind(this, itemView);
-        }
-
-        UserHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-        }
-    }
-
-    class UserListAdapter extends RecyclerView.Adapter<UserHolder> {
-
-        @Override
-        public int getItemCount() {
-            return dataset.size();
-        }
-
-        @Override
-        public UserHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new UserHolder(parent);
-        }
-
-        @Override
-        public void onBindViewHolder(UserHolder holder, int position) {
-            User user = dataset.get(position);
-            holder.mUsername.setText(user.getUsername());
-            holder.mUserEmail.setText(user.getEmail());
         }
     }
 
