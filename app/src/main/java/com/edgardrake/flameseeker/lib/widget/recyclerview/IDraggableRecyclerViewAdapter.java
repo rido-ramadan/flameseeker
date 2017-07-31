@@ -21,7 +21,7 @@ public interface IDraggableRecyclerViewAdapter {
      * @see RecyclerView#getAdapterPositionFor(RecyclerView.ViewHolder)
      * @see RecyclerView.ViewHolder#getAdapterPosition()
      */
-    boolean onItemMove(int fromPosition, int toPosition);
+    boolean onItemMoved(int fromPosition, int toPosition);
 
 
     /**
@@ -35,5 +35,5 @@ public interface IDraggableRecyclerViewAdapter {
      * @see RecyclerView#getAdapterPositionFor(RecyclerView.ViewHolder)
      * @see RecyclerView.ViewHolder#getAdapterPosition()
      */
-    void onItemDismiss(int position);
+    void onItemDismissed(int position);
 }

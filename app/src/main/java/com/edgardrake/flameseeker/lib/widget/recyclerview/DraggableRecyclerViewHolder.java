@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.utilities.NumberUtils;
 
 
@@ -19,6 +18,10 @@ import com.edgardrake.flameseeker.lib.utilities.NumberUtils;
 
 public abstract class DraggableRecyclerViewHolder extends RecyclerView.ViewHolder {
 
+    /**
+     * Default elevation defined in layout XML. Useful for getting to default state after being
+     * pressed upon.
+     */
     private float defaultElevation;
 
     public DraggableRecyclerViewHolder(View view) {
@@ -26,24 +29,24 @@ public abstract class DraggableRecyclerViewHolder extends RecyclerView.ViewHolde
         defaultElevation = ViewCompat.getElevation(view);
     }
 
-    public DraggableRecyclerViewHolder(ViewGroup parent, @LayoutRes int resID) {
-        super(LayoutInflater.from(parent.getContext()).inflate(resID, parent, false));
+    public DraggableRecyclerViewHolder(@LayoutRes int resID, ViewGroup parent) {
+        this(LayoutInflater.from(parent.getContext()).inflate(resID, parent, false));
     }
 
     /**
      * Called when the {@link ItemTouchHelper} first registers an item as being moved or swiped.
      * Implementations should update the item view to indicate it's active state.
      */
-    public void onItemSelected() {
+    protected void onItemSelected() {
         itemView.setBackgroundColor(Color.LTGRAY);
-        ViewCompat.setElevation(itemView, NumberUtils.pxToDp(16));
+        ViewCompat.setElevation(itemView, NumberUtils.dpToPx(16));
     }
 
     /**
      * Called when the {@link ItemTouchHelper} has completed the move or swipe, and the active item
      * state should be cleared.
      */
-    public void onItemReleased() {
+    protected void onItemReleased() {
         itemView.setBackgroundColor(Color.WHITE);
         ViewCompat.setElevation(itemView, defaultElevation);
     }

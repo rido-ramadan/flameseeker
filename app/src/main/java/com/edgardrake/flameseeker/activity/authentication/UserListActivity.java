@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -42,8 +41,7 @@ public class UserListActivity extends BaseActivity {
         setContentView(R.layout.activity_user_list);
 
         dataset = new ArrayList<>();
-//        mUserList.setAdapter(new UserListAdapter());
-        DraggableRecyclerViewAdapter.attachToRecyclerView(new DragAdapter(dataset), mUserList);
+        new DragAdapter(dataset).attachToRecyclerView(mUserList);
 
         mUserList.addItemDecoration(new DividerItemDecoration(getActivity(),
             DividerItemDecoration.VERTICAL));
@@ -96,14 +94,16 @@ public class UserListActivity extends BaseActivity {
         TextView mUsername;
         @BindView(R.id.user_email)
         TextView mUserEmail;
+        @BindView(R.id.user_reorder_handle)
+        ImageView mReorderHandle;
 
         UserHolder(ViewGroup parent) {
-            super(parent, R.layout.row_user);
+            super(R.layout.row_user, parent);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    class DragAdapter extends DraggableRecyclerViewAdapter<User> {
+    class DragAdapter extends DraggableRecyclerViewAdapter<User, UserHolder> {
 
         DragAdapter(List<User> users) {
             super(users);
@@ -115,18 +115,16 @@ public class UserListActivity extends BaseActivity {
         }
 
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public UserHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new UserHolder(parent);
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            if (holder instanceof UserHolder) {
-                User user = dataset.get(position);
-                UserHolder userHolder = (UserHolder) holder;
-                userHolder.mUsername.setText(user.getUsername());
-                userHolder.mUserEmail.setText(user.getEmail());
-            }
+        public void onBindViewHolder(final UserHolder holder, int position) {
+            User user = dataset.get(position);
+            holder.mUsername.setText(user.getUsername());
+            holder.mUserEmail.setText(user.getEmail());
+            setOnDragHandle(holder.mReorderHandle, holder);
         }
     }
 }

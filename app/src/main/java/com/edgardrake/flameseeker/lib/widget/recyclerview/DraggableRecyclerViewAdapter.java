@@ -3,8 +3,10 @@ package com.edgardrake.flameseeker.lib.widget.recyclerview;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MotionEvent;
+import android.view.View;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,9 +15,8 @@ import java.util.List;
  * Created by Edgar Drake on 28-Jul-17.
  */
 
-public abstract class DraggableRecyclerViewAdapter<T>
-    extends RecyclerView.Adapter<DraggableRecyclerViewHolder>
-    implements IDraggableRecyclerViewAdapter, OnStartDragListener {
+public abstract class DraggableRecyclerViewAdapter<T, VH extends DraggableRecyclerViewHolder>
+    extends RecyclerView.Adapter<VH> implements IDraggableRecyclerViewAdapter, OnStartDragListener {
 
     protected List<T> dataset;
     private ItemTouchHelper onDragListener;
@@ -28,12 +29,11 @@ public abstract class DraggableRecyclerViewAdapter<T>
     /**
      * Wrapper method to attach an instance of {@link DraggableRecyclerViewAdapter}'s subclass to
      * the fragment/activity's RecyclerView.
-     * @param adapter RecyclerView's adapter instance of {@link DraggableRecyclerViewAdapter}
-     * @param view RecyclerView to be attached with adapter from the first arguments
+     * @param view RecyclerView to be attached with this adapter
      */
-    public static void attachToRecyclerView(DraggableRecyclerViewAdapter adapter, RecyclerView view) {
-        view.setAdapter(adapter);
-        adapter.onDragListener.attachToRecyclerView(view);
+    public void attachToRecyclerView(RecyclerView view) {
+        view.setAdapter(this);
+        onDragListener.attachToRecyclerView(view);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class DraggableRecyclerViewAdapter<T>
      * {@inheritDoc}
      */
     @Override
-    public void onItemDismiss(int position) {
+    public void onItemDismissed(int position) {
         dataset.remove(position);
         notifyItemRemoved(position);
     }
@@ -68,7 +68,7 @@ public abstract class DraggableRecyclerViewAdapter<T>
      * {@inheritDoc}
      */
     @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
+    public boolean onItemMoved(int fromPosition, int toPosition) {
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
                 Collections.swap(dataset, i, i + 1);
@@ -91,22 +91,27 @@ public abstract class DraggableRecyclerViewAdapter<T>
     }
 
     /**
-     * Default function to start dragging mode when the viewholder's reorder handle icon is touched
-     * @param viewHolder Viewholder of the recyclerview being touched.
-     * @param event Touch event. In this case, this method only care about being touched,
-     *              see{@link MotionEvent#ACTION_DOWN}.
-     * @return False, don't know why
+     * Default function to start dragging mode when the {@link ViewHolder}'s reorder handle icon is
+     * touched
+     * @param handleView A view inside {@link ViewHolder} that is used as point of initiation for
+     *                   dragging.
+     * @param viewHolder ViewHolder of the {@link RecyclerView} being touched.
      */
-    protected boolean onDragHandleTouched(RecyclerView.ViewHolder viewHolder, MotionEvent event) {
-        if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-            onStartDrag(viewHolder);
-        }
-        return false;
+    protected void setOnDragHandle(View handleView, final RecyclerView.ViewHolder viewHolder) {
+        handleView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    onStartDrag(viewHolder);
+                }
+                return false;
+            }
+        });
     }
 
     /**
-     * Callback class that implements what function should the recycler view does when being dragged
-     * or swiped
+     * Callback class that implements what function should the {@link RecyclerView} does when being
+     * dragged or swiped
      */
     public class Callback extends ItemTouchHelper.Callback {
 
@@ -120,7 +125,7 @@ public abstract class DraggableRecyclerViewAdapter<T>
          * {@inheritDoc}
          */
         @Override
-        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        public int getMovementFlags(RecyclerView recyclerView, ViewHolder viewHolder) {
             int dragFlags;
             if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
@@ -136,9 +141,8 @@ public abstract class DraggableRecyclerViewAdapter<T>
          * {@inheritDoc}
          */
         @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                              RecyclerView.ViewHolder target) {
-            adapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        public boolean onMove(RecyclerView recyclerView, ViewHolder viewHolder, ViewHolder target) {
+            adapter.onItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
             return false;
         }
 
@@ -146,8 +150,8 @@ public abstract class DraggableRecyclerViewAdapter<T>
          * {@inheritDoc}
          */
         @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            adapter.onItemDismiss(viewHolder.getAdapterPosition());
+        public void onSwiped(ViewHolder viewHolder, int direction) {
+            adapter.onItemDismissed(viewHolder.getAdapterPosition());
         }
 
         /**
@@ -167,7 +171,7 @@ public abstract class DraggableRecyclerViewAdapter<T>
         }
 
         @Override
-        public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+        public void onSelectedChanged(ViewHolder viewHolder, int actionState) {
             // We only want the active item
             if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
                 if (viewHolder instanceof DraggableRecyclerViewHolder) {
@@ -181,7 +185,7 @@ public abstract class DraggableRecyclerViewAdapter<T>
         }
 
         @Override
-        public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        public void clearView(RecyclerView recyclerView, ViewHolder viewHolder) {
             super.clearView(recyclerView, viewHolder);
             if (viewHolder instanceof DraggableRecyclerViewHolder) {
                 DraggableRecyclerViewHolder draggableHolder =
