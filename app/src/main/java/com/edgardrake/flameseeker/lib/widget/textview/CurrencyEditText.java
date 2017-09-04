@@ -28,6 +28,7 @@ public class CurrencyEditText extends AppCompatEditText
 
     private long value = INVALID_VALUE;
     private String formattedValue = "";
+    private long maxValue = INVALID_VALUE;
 
     public CurrencyEditText(Context context) {
         super(context);
@@ -46,6 +47,10 @@ public class CurrencyEditText extends AppCompatEditText
 
     public long getValue() {
         return value;
+    }
+
+    public void setMaxValue(long value) {
+        maxValue = value;
     }
 
     private void initializeEditText() {
@@ -70,7 +75,11 @@ public class CurrencyEditText extends AppCompatEditText
             if (s.length() > 0) {
                 String rawValue = s.toString().replaceAll("[^0-9/-]", "");
                 value = Long.parseLong(rawValue);
-                formattedValue = NumberUtils.getCurrency(value);
+                if (maxValue > INVALID_VALUE && value > maxValue) {
+                    formattedValue = NumberUtils.getCurrency(maxValue);
+                } else {
+                    formattedValue = NumberUtils.getCurrency(value);
+                }
 
                 // Set edit mode to false to avoid infinite recursion
                 isEditMode = false;
