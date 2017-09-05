@@ -1,6 +1,7 @@
 package com.edgardrake.flameseeker.lib.widget.textview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.utilities.NumberUtils;
 
 /**
@@ -37,11 +39,13 @@ public class CurrencyEditText extends AppCompatEditText
 
     public CurrencyEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        applyAttributeSet(attrs);
         initializeEditText();
     }
 
     public CurrencyEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        applyAttributeSet(attrs);
         initializeEditText();
     }
 
@@ -56,6 +60,15 @@ public class CurrencyEditText extends AppCompatEditText
     private void initializeEditText() {
         addTextChangedListener(this);
         setOnFocusChangeListener(this);
+    }
+
+    private void applyAttributeSet(AttributeSet attrs) {
+        TypedArray set = getContext().obtainStyledAttributes(attrs, R.styleable.CurrencyEditText);
+        try {
+            maxValue = set.getInteger(R.styleable.CurrencyEditText_maxValue, INVALID_VALUE);
+        } finally {
+            set.recycle();
+        }
     }
 
     @Override
@@ -76,10 +89,9 @@ public class CurrencyEditText extends AppCompatEditText
                 String rawValue = s.toString().replaceAll("[^0-9/-]", "");
                 value = Long.parseLong(rawValue);
                 if (maxValue > INVALID_VALUE && value > maxValue) {
-                    formattedValue = NumberUtils.getCurrency(maxValue);
-                } else {
-                    formattedValue = NumberUtils.getCurrency(value);
+                    value = maxValue;
                 }
+                formattedValue = NumberUtils.getCurrency(value);
 
                 // Set edit mode to false to avoid infinite recursion
                 isEditMode = false;
