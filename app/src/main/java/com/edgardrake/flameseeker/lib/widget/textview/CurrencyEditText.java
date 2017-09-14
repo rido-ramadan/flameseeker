@@ -55,6 +55,12 @@ public class CurrencyEditText extends AppCompatEditText
 
     public void setMaxValue(long value) {
         maxValue = value;
+
+        // Ensure the EditText's value to reduce to new maximum value while prevent stack overflow
+        if (this.value > maxValue) {
+            this.value = maxValue;
+            setText(String.valueOf(value));
+        }
     }
 
     private void initializeEditText() {
