@@ -8,17 +8,20 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.http.HttpContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,6 +38,10 @@ import okhttp3.Response;
  */
 
 public abstract class BaseActivity extends AppCompatActivity implements HttpContext {
+
+    @Nullable
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     public interface RequestCallback {
         void onSuccess(String response) throws IOException;
@@ -102,18 +109,21 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCont
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
+        if (mToolbar != null) setSupportActionBar(mToolbar);
     }
 
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
         ButterKnife.bind(this);
+        if (mToolbar != null) setSupportActionBar(mToolbar);
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         super.setContentView(view, params);
         ButterKnife.bind(this);
+        if (mToolbar != null) setSupportActionBar(mToolbar);
     }
 
     /**
