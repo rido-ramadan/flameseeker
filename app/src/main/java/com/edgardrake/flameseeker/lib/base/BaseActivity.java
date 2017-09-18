@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CallSuper;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -124,6 +126,29 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCont
         super.setContentView(view, params);
         ButterKnife.bind(this);
         if (mToolbar != null) setSupportActionBar(mToolbar);
+    }
+
+    /**
+     * Swap fragment at the specified container to a new fragment. Useful for fragment to execute
+     * activity fragment transaction without knowing the parent's activity specification.
+     * @param containerResID ViewGroup which fragment wished to be replaced
+     * @param fragment New fragment to replace the contains at the specified ViewGroup
+     */
+    public void swapFragment(@IdRes int containerResID, Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+            .replace(containerResID, fragment)
+            .addToBackStack(null)
+            .commit();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**

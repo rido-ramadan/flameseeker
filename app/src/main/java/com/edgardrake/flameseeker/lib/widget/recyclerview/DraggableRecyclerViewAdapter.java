@@ -1,5 +1,6 @@
 package com.edgardrake.flameseeker.lib.widget.recyclerview;
 
+import android.support.annotation.CallSuper;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

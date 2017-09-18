@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edgardrake.flameseeker.R;
+import com.edgardrake.flameseeker.activity.images.MultiImagePickerActivity;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewAdapter;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewHolder;
@@ -32,6 +33,8 @@ public class UserListActivity extends BaseActivity {
     FloatingActionButton mAddUserButton;
     @BindView(R.id.edit_current_user)
     FloatingActionButton mEditCurrentUser;
+    @BindView(R.id.open_gallery)
+    FloatingActionButton mOpenGallery;
 
     private List<User> dataset;
 
@@ -71,6 +74,13 @@ public class UserListActivity extends BaseActivity {
                 }
                 String postEmail = user.getEmail();
                 Toast.makeText(getActivity(), String.format("Prev: %s\nPost: %s", prevEmail, postEmail), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mOpenGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MultiImagePickerActivity.startThisActivityForResult(getActivity(), 100);
             }
         });
     }
