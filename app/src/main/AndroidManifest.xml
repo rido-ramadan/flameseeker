@@ -4,6 +4,9 @@
           android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".Flameseeker"
@@ -14,24 +17,36 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".messaging.MessageListActivity"
+            android:name=".activity.messaging.MessageListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+            <!-- <action android:name="android.intent.action.VIEW"/> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
+            android:name=".activity.messaging.MessageDetailActivity"
+            android:label="@string/title_message_detail"
+            android:parentActivityName=".activity.messaging.MessageListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.edgardrake.flameseeker.activity.messaging.MessageListActivity"/>
+        </activity>
+        <activity
+            android:name=".activity.authentication.UserListActivity"
+            android:label="@string/title_activity_user_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".messaging.MessageDetailActivity"
-            android:label="@string/title_message_detail"
-            android:parentActivityName=".messaging.MessageListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.edgardrake.flameseeker.messaging.MessageListActivity"/>
         </activity>
 
         <service
@@ -57,7 +72,29 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent"/>
 
-        <activity android:name=".authentication.AuthActivity">
+        <activity android:name=".activity.authentication.AuthActivity">
+        </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <activity
+            android:name=".activity.maps.MapsActivity"
+            android:label="@string/title_activity_maps">
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
+        <activity
+            android:name=".activity.images.MultiImagePickerActivity"
+            android:label="@string/title_activity_multi_image_picker"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

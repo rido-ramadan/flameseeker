@@ -2,7 +2,8 @@ package com.edgardrake.flameseeker.fcm;
 
 import android.util.Log;
 
-import com.edgardrake.flameseeker.localstorage.LocalStorage;
+import com.edgardrake.flameseeker.R;
+import com.edgardrake.flameseeker.lib.data.LocalStorage;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -12,7 +13,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 
 public class FlameseekerInstanceIDService extends FirebaseInstanceIdService {
 
-    private static final String TAG = "Flamseeker.FCM";
+    private static final String TAG = "Flameseeker.FCM";
 
     @Override
     public void onTokenRefresh() {
@@ -24,7 +25,9 @@ public class FlameseekerInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void sendRegistrationToServer(String token) {
-        LocalStorage.getInstance(this).edit().putString(LocalStorage.FCM_TOKEN, token).apply();
+        LocalStorage.getInstance(this).edit()
+            .putString(getString(R.string.localstorage_fcm_token), token)
+            .apply();
         Log.i(TAG, "Stored FCM token: " + token);
     }
 }
