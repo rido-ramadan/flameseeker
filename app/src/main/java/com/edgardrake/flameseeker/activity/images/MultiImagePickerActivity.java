@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,15 +25,6 @@ public class MultiImagePickerActivity extends BaseActivity {
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fragment, AlbumPickerFragment.newInstance())
             .commit();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-            }
-        });
     }
 
     public static void startThisActivityForResult(Activity activity, int code) {
@@ -40,4 +33,21 @@ public class MultiImagePickerActivity extends BaseActivity {
             code);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_multi_image_picker, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_open_camera:
+                return true;
+            case R.id.action_done:
+                return false;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

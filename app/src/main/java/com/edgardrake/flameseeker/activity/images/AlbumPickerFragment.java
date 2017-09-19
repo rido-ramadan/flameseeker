@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -45,6 +46,7 @@ public class AlbumPickerFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         albums = new ArrayList<>();
     }
 
@@ -72,6 +74,11 @@ public class AlbumPickerFragment extends BaseFragment {
             albums.addAll(ImageUtils.getAllAlbums(getContext()));
             mAlbumList.getAdapter().notifyItemRangeInserted(0, albums.size());
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_done).setVisible(false);
     }
 
     class AlbumHolder extends DraggableRecyclerViewHolder {
@@ -112,7 +119,7 @@ public class AlbumPickerFragment extends BaseFragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getParentActivity().swapFragment(R.id.fragment, MultiImagePickerFragment.newInstance(album));
+                    getParentActivity().swapFragment(R.id.fragment, MultiImagePickerFragment.newInstance(album, 10));
                 }
             });
         }

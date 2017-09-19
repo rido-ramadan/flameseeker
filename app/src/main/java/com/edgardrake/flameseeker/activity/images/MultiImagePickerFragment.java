@@ -1,20 +1,25 @@
 package com.edgardrake.flameseeker.activity.images;
 
 
-import android.graphics.BitmapFactory;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.images.util.AlbumEntry;
 import com.edgardrake.flameseeker.activity.images.util.ImageEntry;
+import com.edgardrake.flameseeker.lib.base.BaseFragment;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewAdapter;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewHolder;
 
@@ -27,19 +32,25 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MultiImagePickerFragment extends Fragment {
+public class MultiImagePickerFragment extends BaseFragment {
+
+    public static final String SELECTED_IMAGE_PATHS = "selected";
 
     private static final String ALBUM_ENTRY = "album_entry";
+    private static final String LIMIT = "max_count";
 
     @BindView(R.id.image_list)
     RecyclerView mImageList;
 
+    private int count;
     private List<ImageEntry> images;
+    private ArrayList<String> selectedPaths;
 
-    public static MultiImagePickerFragment newInstance(AlbumEntry album) {
+    public static MultiImagePickerFragment newInstance(AlbumEntry album, int limit) {
         MultiImagePickerFragment fragment = new MultiImagePickerFragment();
         Bundle args = new Bundle();
         args.putSerializable(ALBUM_ENTRY, album);
+        args.putSerializable(LIMIT, limit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,8 +61,11 @@ public class MultiImagePickerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         images = new ArrayList<>();
         images.addAll(((AlbumEntry) getArguments().getSerializable(ALBUM_ENTRY)).getImages());
+        count = getArguments().getInt(LIMIT, 0);
+        selectedPaths = new ArrayList<>();
     }
 
     @Override
@@ -75,6 +89,24 @@ public class MultiImagePickerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_done).setVisible(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                getParentActivity().setResult(Activity.RESULT_OK,
+                    new Intent().putStringArrayListExtra(SELECTED_IMAGE_PATHS, selectedPaths));
+                getParentActivity().finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     class ImageHolder extends DraggableRecyclerViewHolder {
 
         @BindView(R.id.image_thumbnail)
@@ -88,7 +120,12 @@ public class MultiImagePickerFragment extends Fragment {
         }
 
         private void toggle() {
-            mImageCheck.setVisibility(mImageCheck.getVisibility() == View.VISIBLE? View.GONE : View.VISIBLE);
+            mImageCheck.setVisibility(mImageCheck.getVisibility() == View.VISIBLE?
+                View.GONE : View.VISIBLE);
+        }
+
+        private boolean isChecked() {
+            return mImageCheck.getVisibility() == View.VISIBLE;
         }
     }
 
@@ -110,14 +147,26 @@ public class MultiImagePickerFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ImageHolder holder, int position) {
-            ImageEntry image = images.get(position);
+            final ImageEntry image = images.get(position);
             // holder.mThumbnail.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-            Glide.with(holder.getContext()).load(image.getPath()).centerCrop().into(holder.mThumbnail);
-            holder.mImageCheck.setVisibility(View.GONE);
+            Glide.with(holder.getContext()).load(image.getPath()).dontAnimate()
+                .centerCrop().into(holder.mThumbnail);
+            holder.mImageCheck.setVisibility(selectedPaths.contains(image.getPath())?
+                View.VISIBLE : View.GONE);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.toggle();
+                    if (count > 0 && selectedPaths.size() < count) {  // Selected below limit count
+                        if (!selectedPaths.contains(image.getPath()) && !holder.isChecked()) {
+                            selectedPaths.add(image.getPath());
+                        } else {
+                            selectedPaths.remove(image.getPath());
+                        }
+                        holder.toggle();
+                    } else {
+                        Toast.makeText(getContext(), R.string.max_limit_reach, Toast.LENGTH_SHORT)
+                            .show();
+                    }
                 }
             });
         }

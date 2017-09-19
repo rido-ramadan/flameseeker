@@ -25,6 +25,10 @@ public class ImageEntry implements Comparable<ImageEntry> {
         return path;
     }
 
+    public long getID() {
+        return ID;
+    }
+
     @Override
     public String toString() {
         return String.format(Locale.getDefault(), "Image ID: %1$d path: %2$s date:%3$s",
