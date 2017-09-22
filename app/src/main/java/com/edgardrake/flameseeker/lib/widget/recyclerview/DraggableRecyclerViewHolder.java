@@ -1,5 +1,6 @@
 package com.edgardrake.flameseeker.lib.widget.recyclerview;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edgardrake.flameseeker.lib.utilities.NumberUtils;
+
+import butterknife.ButterKnife;
 
 
 /**
@@ -27,10 +30,20 @@ public abstract class DraggableRecyclerViewHolder extends RecyclerView.ViewHolde
     public DraggableRecyclerViewHolder(View view) {
         super(view);
         defaultElevation = ViewCompat.getElevation(view);
+        ButterKnife.bind(this, view);
     }
 
     public DraggableRecyclerViewHolder(@LayoutRes int resID, ViewGroup parent) {
         this(LayoutInflater.from(parent.getContext()).inflate(resID, parent, false));
+        ButterKnife.bind(this, itemView);
+    }
+
+    /**
+     * Get the owning context of this view. Usually view has only context pointing to the activity.
+     * @return The owning activity which has inflate this fragment.
+     */
+    public Context getContext() {
+        return itemView.getContext();
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.edgardrake.flameseeker.activity.authentication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edgardrake.flameseeker.R;
+import com.edgardrake.flameseeker.activity.images.MultiImagePickerActivity;
+import com.edgardrake.flameseeker.activity.images.MultiImagePickerFragment;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.utilities.Logger;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewAdapter;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewHolder;
 import com.edgardrake.flameseeker.model.AuthUser;
@@ -32,6 +36,8 @@ public class UserListActivity extends BaseActivity {
     FloatingActionButton mAddUserButton;
     @BindView(R.id.edit_current_user)
     FloatingActionButton mEditCurrentUser;
+    @BindView(R.id.open_gallery)
+    FloatingActionButton mOpenGallery;
 
     private List<User> dataset;
 
@@ -73,6 +79,13 @@ public class UserListActivity extends BaseActivity {
                 Toast.makeText(getActivity(), String.format("Prev: %s\nPost: %s", prevEmail, postEmail), Toast.LENGTH_SHORT).show();
             }
         });
+
+        mOpenGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MultiImagePickerActivity.startThisActivityForResult(getActivity(), 10, 100);
+            }
+        });
     }
 
     public void setDataset(List<User> source) {
@@ -85,6 +98,19 @@ public class UserListActivity extends BaseActivity {
         int insertionPosition = dataset.size();
         dataset.add(user);
         mUserList.getAdapter().notifyItemInserted(insertionPosition);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == 100) {
+            ArrayList<String> paths =
+                data.getStringArrayListExtra(MultiImagePickerFragment.SELECTED_IMAGE_PATHS);
+            Logger logger = Logger.log(getContext());
+            for (String path : paths) {
+                logger.addEntry("Path", path);
+            }
+            logger.show();
+        }
     }
 
     class UserHolder extends DraggableRecyclerViewHolder {

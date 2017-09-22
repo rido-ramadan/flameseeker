@@ -5,20 +5,26 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CallSuper;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.http.HttpContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,6 +41,10 @@ import okhttp3.Response;
  */
 
 public abstract class BaseActivity extends AppCompatActivity implements HttpContext {
+
+    @Nullable
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     public interface RequestCallback {
         void onSuccess(String response) throws IOException;
@@ -102,18 +112,55 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCont
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
+        if (mToolbar != null) setSupportActionBar(mToolbar);
     }
 
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
         ButterKnife.bind(this);
+        if (mToolbar != null) setSupportActionBar(mToolbar);
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         super.setContentView(view, params);
         ButterKnife.bind(this);
+        if (mToolbar != null) setSupportActionBar(mToolbar);
+    }
+
+    /**
+     * Swap fragment at the specified container to a new fragment. Useful for fragment to execute
+     * activity fragment transaction without knowing the parent's activity specification.
+     * @param containerResID ViewGroup which fragment wished to be replaced
+     * @param fragment New fragment to replace the contains at the specified ViewGroup
+     */
+    public void swapFragment(@IdRes int containerResID, Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+            .replace(containerResID, fragment)
+            .addToBackStack(null)
+            .commit();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home &&
+            getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

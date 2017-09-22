@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:fabSize="normal"
         app:srcCompat="@android:drawable/ic_input_add"
         android:tint="@android:color/white"/>
 
@@ -32,12 +33,21 @@
         app:backgroundTint="@color/colorPrimaryDark"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
-        android:layout_marginRight="96dp"
+        android:layout_marginRight="80dp"
+        app:fabSize="normal"
         app:srcCompat="@android:drawable/ic_menu_help"
         android:tint="@android:color/white"/>
 
-    <com.edgardrake.flameseeker.lib.widget.loading.LoadingOverlay
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/open_gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_blue_bright"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_image_black_24dp"
+        android:tint="@android:color/white"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="142dp"/>
 
 </android.support.design.widget.CoordinatorLayout>
