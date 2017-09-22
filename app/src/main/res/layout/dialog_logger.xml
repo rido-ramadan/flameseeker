@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/Theme.AppCompat">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_divider_bottom"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="Logging"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/log_entries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="LinearLayoutManager"
+        app:paddingStart="4dp"
+        app:paddingEnd="4dp"
+        tools:listitem="@layout/row_logging"/>
+
+</LinearLayout>

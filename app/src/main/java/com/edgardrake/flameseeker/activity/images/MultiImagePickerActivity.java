@@ -3,33 +3,33 @@ package com.edgardrake.flameseeker.activity.images;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
 
-import butterknife.BindView;
-
 public class MultiImagePickerActivity extends BaseActivity {
+
+    private static final String LIMIT = "limit";
+
+    private int limit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_image_picker);
 
+        limit = getIntent().getIntExtra(LIMIT, 0);
+
         getSupportFragmentManager().beginTransaction()
-            .add(R.id.fragment, AlbumPickerFragment.newInstance())
+            .add(R.id.fragment, AlbumPickerFragment.newInstance(limit))
             .commit();
     }
 
-    public static void startThisActivityForResult(Activity activity, int code) {
+    public static void startThisActivityForResult(Activity activity, int limit, int code) {
         activity.startActivityForResult(
-            new Intent(activity, MultiImagePickerActivity.class),
+            new Intent(activity, MultiImagePickerActivity.class).putExtra(LIMIT, limit),
             code);
     }
 

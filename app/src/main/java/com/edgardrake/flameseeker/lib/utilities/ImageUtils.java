@@ -65,6 +65,7 @@ public class ImageUtils {
 
             // Log.d("Gallery", String.format("%1$s    | %2$s", album.toString(), image.toString()));
         }
+        cursor.close();
 
         return albums;
     }

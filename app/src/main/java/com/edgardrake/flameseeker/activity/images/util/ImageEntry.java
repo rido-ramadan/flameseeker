@@ -2,6 +2,7 @@ package com.edgardrake.flameseeker.activity.images.util;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -10,7 +11,7 @@ import java.util.Locale;
  * Created by Edgar Drake on 18-Sep-17.
  */
 
-public class ImageEntry implements Comparable<ImageEntry> {
+public class ImageEntry implements Comparable<ImageEntry>, Serializable {
     private long ID;
     private String path;
     private long dateModified;

@@ -20,6 +20,7 @@ import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.images.util.AlbumEntry;
 import com.edgardrake.flameseeker.activity.images.util.ImageEntry;
 import com.edgardrake.flameseeker.lib.base.BaseFragment;
+import com.edgardrake.flameseeker.lib.utilities.Logger;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewAdapter;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewHolder;
 
@@ -42,7 +43,7 @@ public class MultiImagePickerFragment extends BaseFragment {
     @BindView(R.id.image_list)
     RecyclerView mImageList;
 
-    private int count;
+    private Integer count;
     private List<ImageEntry> images;
     private ArrayList<String> selectedPaths;
 
@@ -64,7 +65,7 @@ public class MultiImagePickerFragment extends BaseFragment {
         setHasOptionsMenu(true);
         images = new ArrayList<>();
         images.addAll(((AlbumEntry) getArguments().getSerializable(ALBUM_ENTRY)).getImages());
-        count = getArguments().getInt(LIMIT, 0);
+        count = getArguments().getInt(LIMIT);
         selectedPaths = new ArrayList<>();
     }
 
@@ -129,7 +130,7 @@ public class MultiImagePickerFragment extends BaseFragment {
         }
     }
 
-    class ImageAdapter extends DraggableRecyclerViewAdapter<ImageEntry, ImageHolder> {
+    private class ImageAdapter extends DraggableRecyclerViewAdapter<ImageEntry, ImageHolder> {
 
         private ImageAdapter(List<ImageEntry> images) {
             super(images);
@@ -156,16 +157,26 @@ public class MultiImagePickerFragment extends BaseFragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (count > 0 && selectedPaths.size() < count) {  // Selected below limit count
+                    if (count != null) { // count != null, respect the limit count
+                        if (!selectedPaths.contains(image.getPath()) && !holder.isChecked()) {
+                            if (selectedPaths.size() < count) {  // count isn't reached
+                                selectedPaths.add(image.getPath());
+                                holder.toggle();
+                            } else {  // count already reached, nothing happens
+                                Toast.makeText(getContext(), R.string.max_limit_reach,
+                                    Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            selectedPaths.remove(image.getPath());
+                            holder.toggle();
+                        }
+                    } else {  // count == null means no limit
                         if (!selectedPaths.contains(image.getPath()) && !holder.isChecked()) {
                             selectedPaths.add(image.getPath());
                         } else {
                             selectedPaths.remove(image.getPath());
                         }
                         holder.toggle();
-                    } else {
-                        Toast.makeText(getContext(), R.string.max_limit_reach, Toast.LENGTH_SHORT)
-                            .show();
                     }
                 }
             });

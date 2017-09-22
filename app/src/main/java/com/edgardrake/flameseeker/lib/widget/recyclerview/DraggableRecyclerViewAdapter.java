@@ -127,14 +127,15 @@ public abstract class DraggableRecyclerViewAdapter<T, VH extends DraggableRecycl
          */
         @Override
         public int getMovementFlags(RecyclerView recyclerView, ViewHolder viewHolder) {
-            int dragFlags;
+            int dragFlags = 0;
+            int swipeFlags = 0;
             if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             } else {
                 dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN |
-                    ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+                    ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ;
             }
-            int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             return makeMovementFlags(dragFlags, swipeFlags);
         }
 

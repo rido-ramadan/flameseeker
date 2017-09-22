@@ -1,6 +1,5 @@
 package com.edgardrake.flameseeker.activity.images;
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +20,7 @@ import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewH
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,13 +30,20 @@ import butterknife.ButterKnife;
  */
 public class AlbumPickerFragment extends BaseFragment {
 
+    private static final String LIMIT = "limit";
+
     @BindView(R.id.album_list)
     RecyclerView mAlbumList;
 
     private List<AlbumEntry> albums;
+    private int limit;
 
-    public static AlbumPickerFragment newInstance() {
-        return new AlbumPickerFragment();
+    public static AlbumPickerFragment newInstance(int limit) {
+        AlbumPickerFragment fragment = new AlbumPickerFragment();
+        Bundle args = new Bundle();
+        args.putInt(LIMIT, limit);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     public AlbumPickerFragment() {
@@ -48,6 +55,7 @@ public class AlbumPickerFragment extends BaseFragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         albums = new ArrayList<>();
+        limit = getArguments().getInt(LIMIT, 0);
     }
 
     @Override
@@ -115,11 +123,13 @@ public class AlbumPickerFragment extends BaseFragment {
             String thumbnail = album.getThumbnail();
             // holder.mThumbnail.setImageBitmap(BitmapFactory.decodeFile(thumbnail));
             Glide.with(holder.getContext()).load(thumbnail).centerCrop().into(holder.mThumbnail);
-            holder.mAlbumName.setText(album.getName());
+            holder.mAlbumName.setText(String.format(Locale.getDefault(), "%s (%d)",
+                album.getName(), album.getImages().size()));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getParentActivity().swapFragment(R.id.fragment, MultiImagePickerFragment.newInstance(album, 10));
+                    getParentActivity().swapFragment(R.id.fragment,
+                        MultiImagePickerFragment.newInstance(album, limit));
                 }
             });
         }
