@@ -54,4 +54,8 @@ public class BaseFragment extends Fragment implements HttpContext {
     public BaseActivity getParentActivity() {
         return (BaseActivity) getActivity();
     }
+
+    public final BaseFragment getFragment() {
+        return this;
+    }
 }
