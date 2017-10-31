@@ -80,6 +80,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
+    testCompile 'junit:junit:4.12'
 
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
@@ -92,14 +93,17 @@ dependencies {
     compile 'com.android.support:multidex:1.0.2'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
-    compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
-    testCompile 'junit:junit:4.12'
+    compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
+    compile 'com.google.dagger:dagger:2.12'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.12'
+    compile 'com.google.dagger:dagger-android-support:2.12' // if you use the support libraries
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.12'
 }
 
 apply plugin: 'com.google.gms.google-services'
