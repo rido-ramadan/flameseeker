@@ -70,7 +70,7 @@ public class UserListActivity extends BaseActivity {
             public void onClick(View v) {
                 AuthUser user = AuthUser.getInstance(getContext());
                 String prevEmail = user.getEmail();
-                if (user.getEmail().equals("regulus@drake.com")) {
+                if ("regulus@drake.com".equals(user.getEmail())) {
                     user.edit().setEmail("rytlock@ascalon.com").commit();
                 } else {
                     user.edit().setEmail("regulus@drake.com").commit();

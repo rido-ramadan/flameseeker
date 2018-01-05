@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/profile_detail_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/text_margin">
+
+    <TextView
+        android:id="@+id/profile_detail_expander"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:drawableRight="@drawable/ic_chevron_down_blue_32dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:text="Biodata"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        app:layout_columnSpan="2"/>
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/profile_detail_expandable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        app:columnCount="2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/text_margin"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="Name"
+            app:layout_columnSpan="1"/>
+
+        <TextView
+            android:id="@+id/profile_detail_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            tools:text="Miles Edgeworth"
+            app:layout_columnSpan="1"
+            app:layout_gravity="fill_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/text_margin"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="Age"
+            app:layout_columnSpan="1"/>
+
+        <TextView
+            android:id="@+id/profile_detail_age"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            tools:text="22"
+            app:layout_columnSpan="1"
+            app:layout_gravity="fill_horizontal"/>
+
+    </android.support.v7.widget.GridLayout>
+
+</LinearLayout>
