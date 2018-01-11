@@ -21,6 +21,7 @@ public class MultiImagePickerActivity extends BaseActivity {
         setContentView(R.layout.activity_multi_image_picker);
 
         limit = getIntent().getIntExtra(LIMIT, 0);
+        getSupportActionBar().setTitle(getString(R.string.choose_image_limit, limit));
 
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fragment, AlbumPickerFragment.newInstance(limit))

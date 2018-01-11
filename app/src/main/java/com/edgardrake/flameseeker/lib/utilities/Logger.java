@@ -38,6 +38,7 @@ public class Logger {
         if (logger == null) {
             logger = new Logger(context);
         }
+        logger.entries.clear();
         return logger;
     }
 

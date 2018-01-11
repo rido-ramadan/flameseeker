@@ -10,8 +10,9 @@
         android:id="@+id/image_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="vertical"
         app:layoutManager="GridLayoutManager"
-        app:spanCount="4"
+        app:spanCount="@integer/image_column_count"
         tools:listitem="@layout/grid_image"/>
 
 </RelativeLayout>
