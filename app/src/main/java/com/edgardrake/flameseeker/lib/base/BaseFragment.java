@@ -18,21 +18,18 @@ import okhttp3.OkHttpClient;
 
 public class BaseFragment extends Fragment implements HttpContext {
 
-    private OkHttpClient httpClient;
     private Handler mainHandler;
 
     @Override
     @CallSuper
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        httpClient = new OkHttpClient();
         mainHandler = new Handler(Looper.getMainLooper());
     }
 
     @Override
     @CallSuper
     public void onDestroy() {
-        httpClient.dispatcher().cancelAll();
         super.onDestroy();
     }
 
@@ -43,7 +40,7 @@ public class BaseFragment extends Fragment implements HttpContext {
 
     @Override
     public OkHttpClient getHttpClient() {
-        return httpClient;
+        return getParentActivity().getHttpClient();
     }
 
     @Override
