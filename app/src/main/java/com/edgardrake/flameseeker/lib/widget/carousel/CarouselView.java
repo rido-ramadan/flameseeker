@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -169,6 +170,13 @@ public class CarouselView extends FrameLayout {
         assert images != null && images.length > 0;
         Log.d(TAG, "OnDataLoaded");
 
+        getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                renderCarousel(mCarousel.getMeasuredWidth(), getRenderedHeight());
+            }
+        });
         renderCarousel(mCarousel.getMeasuredWidth(), getRenderedHeight());
 
         CarouselAdapter<T> cAdapter = new CarouselAdapter<>(dataset, images, onClicked);
