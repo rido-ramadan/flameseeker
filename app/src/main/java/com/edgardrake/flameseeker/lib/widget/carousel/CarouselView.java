@@ -1,8 +1,10 @@
 package com.edgardrake.flameseeker.lib.widget.carousel;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.support.annotation.AttrRes;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -10,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -41,20 +42,51 @@ public class CarouselView extends FrameLayout {
     @BindView(R.id.carousel_indicator)
     CircleIndicator mIndicator;
 
-    private int width;
-    private int height;
-    private float aspectRatio;
-
-    private Bitmap[] images;
+    private Bitmap[] imageSources;
     private int loadCount;
 
     private PagerAdapter adapter;
 
     private Handler threadHandler;
     private Runnable task;
+    private int delayToScroll;
+
+    public CarouselView(Context context) {
+        super(context);
+        initializeView(context);
+    }
 
     public CarouselView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initializeView(context);
+        readAttributes(attrs);
+    }
+
+    public CarouselView(Context context, AttributeSet attrs, @AttrRes int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initializeView(context);
+        readAttributes(attrs);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int maxHeight = 0;
+        for (int i = 0; i < mCarousel.getChildCount(); i++) {
+            View mChildPage = mCarousel.getChildAt(i);
+            mChildPage.measure(widthMeasureSpec,
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            maxHeight = Math.max(maxHeight, mChildPage.getMeasuredHeight());
+        }
+        if (maxHeight > 0) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight,
+                MeasureSpec.EXACTLY);
+        }
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private void initializeView(Context context) {
         LayoutInflater.from(context).inflate(R.layout.carousel, this);
         ButterKnife.bind(this);
 
@@ -67,40 +99,12 @@ public class CarouselView extends FrameLayout {
         };
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        // Ensure that if the view is destroyed by OS lifecycle,
-        // it will still retain its previous value
-        if (MeasureSpec.getSize(widthMeasureSpec) > 0)
-            this.width = MeasureSpec.getSize(widthMeasureSpec);
-    }
-
-    private int getRenderedHeight() {
-        float height = 0;
-        if (aspectRatio > 0) {
-            height = this.width / aspectRatio;
-        }
-        return (int) height;
-    }
-
-    private void renderCarousel(int width, int height) {
-        this.width = width;
-        this.height = height;
-        mCarousel.getLayoutParams().width = width;
-        mCarousel.getLayoutParams().height = height;
-    }
-
-    private void setMinAspectRatio(Bitmap image) {
-        // Calculate the image aspect ratio
-        float currentAspectRatio = image.getWidth() * 1.0f / image.getHeight();
-
-        // Find the minimum aspect ratio (most like closer to 1.0)
-        if (aspectRatio == 0) {
-            aspectRatio = currentAspectRatio;
-        } else if (currentAspectRatio < aspectRatio) {
-            aspectRatio = currentAspectRatio;
+    private void readAttributes(AttributeSet attrs) {
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CarouselView, 0 ,0);
+        try {
+            delayToScroll = a.getInt(R.styleable.CarouselView_delay, DELAY_TO_SCROLL);
+        } finally {
+            a.recycle();
         }
     }
 
@@ -111,22 +115,18 @@ public class CarouselView extends FrameLayout {
 
         mCarousel.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float posOffset, int posOffsetPixels) {
-
-            }
+            public void onPageScrolled(int position, float posOffset, int posOffsetPixels) {}
 
             @Override
             public void onPageSelected(int position) {
-                resetCountdown(DELAY_TO_SCROLL);
+                resetCountdown(delayToScroll);
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
 
-        resetCountdown(DELAY_TO_SCROLL);
+        resetCountdown(delayToScroll);
     }
 
     private void resetCountdown(int delay) {
@@ -140,7 +140,7 @@ public class CarouselView extends FrameLayout {
                                   final List<V> dataset,
                                   final OnCarouselClicked<V> onPageClicked) {
         Assert.assertEquals(images.size(), dataset.size());
-        this.images = new Bitmap[images.size()];
+        this.imageSources = new Bitmap[images.size()];
         loadCount = 0;
 
         // Load all images in the specified list
@@ -153,12 +153,10 @@ public class CarouselView extends FrameLayout {
                     @Override
                     public void onResourceReady(Bitmap resource,
                                                 GlideAnimation<? super Bitmap> glideAnimation) {
-                        CarouselView.this.images[index] = resource;
+                        imageSources[index] = resource;
                         loadCount++;
 
-                        setMinAspectRatio(resource);
-
-                        if (loadCount == CarouselView.this.images.length) {  // All images loaded
+                        if (loadCount == imageSources.length) {  // All images loaded
                             onDataLoaded(dataset, onPageClicked);
                         }
                     }
@@ -167,19 +165,10 @@ public class CarouselView extends FrameLayout {
     }
 
     private <T> void onDataLoaded(List<T> dataset, OnCarouselClicked<T> onClicked) {
-        assert images != null && images.length > 0;
+        assert imageSources != null && imageSources.length > 0;
         Log.d(TAG, "OnDataLoaded");
 
-        getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                renderCarousel(mCarousel.getMeasuredWidth(), getRenderedHeight());
-            }
-        });
-        renderCarousel(mCarousel.getMeasuredWidth(), getRenderedHeight());
-
-        CarouselAdapter<T> cAdapter = new CarouselAdapter<>(dataset, images, onClicked);
+        CarouselAdapter<T> cAdapter = new CarouselAdapter<>(dataset, imageSources, onClicked);
         setAdapter(cAdapter);
     }
 
@@ -202,7 +191,7 @@ public class CarouselView extends FrameLayout {
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(ViewGroup container, final int position) {
 
             final View itemView = LayoutInflater.from(container.getContext())
                 .inflate(R.layout.carousel_item, container, false);
@@ -214,7 +203,7 @@ public class CarouselView extends FrameLayout {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(data);
+                    listener.onClick(data, position);
                 }
             });
             container.addView(itemView);
@@ -239,6 +228,6 @@ public class CarouselView extends FrameLayout {
     }
 
     public interface OnCarouselClicked<T> {
-        void onClick(T data);
+        void onClick(T data, int position);
     }
 }

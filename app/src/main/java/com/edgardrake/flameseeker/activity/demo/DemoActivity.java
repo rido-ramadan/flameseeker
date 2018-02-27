@@ -3,6 +3,7 @@ package com.edgardrake.flameseeker.activity.demo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.edgardrake.flameseeker.R;
+import com.edgardrake.flameseeker.activity.demo.fragment.CarouselFragment;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
 
 import butterknife.BindView;
@@ -23,6 +25,8 @@ public class DemoActivity extends BaseActivity implements OnNavigationItemSelect
     DrawerLayout mDrawer;
     @BindView(R.id.nav_view)
     NavigationView mSidebarMenu;
+
+    private Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +80,8 @@ public class DemoActivity extends BaseActivity implements OnNavigationItemSelect
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
+        if (id == R.id.nav_carousel) {
+            setFragment(CarouselFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -91,5 +93,18 @@ public class DemoActivity extends BaseActivity implements OnNavigationItemSelect
         }
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void setFragment(Fragment fragment) {
+        if (activeFragment == null) {
+            getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, fragment)
+                .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+        }
+        activeFragment = fragment;
     }
 }

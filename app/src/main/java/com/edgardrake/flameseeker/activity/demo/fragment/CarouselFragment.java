@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.base.BaseFragment;
 import com.edgardrake.flameseeker.lib.widget.carousel.CarouselView;
+import com.edgardrake.flameseeker.lib.widget.carousel.CarouselView.OnCarouselClicked;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,9 +67,9 @@ public class CarouselFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, getView());
 
-        mCarousel.setDataset(imageSrcs, dataset, new CarouselView.OnCarouselClicked<CarouselData>() {
+        mCarousel.setDataset(imageSrcs, dataset, new OnCarouselClicked<CarouselData>() {
             @Override
-            public void onClick(CarouselData data) {
+            public void onClick(CarouselData data, int position) {
                 Toast.makeText(getActivity(), data.caption, Toast.LENGTH_SHORT).show();
             }
         });
