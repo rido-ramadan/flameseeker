@@ -16,7 +16,7 @@ import okhttp3.OkHttpClient;
  * Created by Edgar Drake on 26-Jan-17.
  */
 
-public class BaseFragment extends Fragment implements HttpContext {
+public abstract class BaseFragment extends Fragment implements HttpContext {
 
     private Handler mainHandler;
 

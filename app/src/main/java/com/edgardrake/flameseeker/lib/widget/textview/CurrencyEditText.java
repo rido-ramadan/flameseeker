@@ -53,6 +53,10 @@ public class CurrencyEditText extends AppCompatEditText
         return value;
     }
 
+    public void setValue(long value) {
+        setText(String.valueOf(value));
+    }
+
     public void setMaxValue(long value) {
         maxValue = value;
 
