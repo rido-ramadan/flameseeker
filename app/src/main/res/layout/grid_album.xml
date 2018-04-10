@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.edgardrake.flameseeker.lib.widget.SquareImageView
+    <com.edgardrake.flameseeker.lib.widget.imageview.SquareImageView
         android:id="@+id/album_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

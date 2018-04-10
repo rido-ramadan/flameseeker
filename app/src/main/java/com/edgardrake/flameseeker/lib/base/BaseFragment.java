@@ -16,23 +16,20 @@ import okhttp3.OkHttpClient;
  * Created by Edgar Drake on 26-Jan-17.
  */
 
-public class BaseFragment extends Fragment implements HttpContext {
+public abstract class BaseFragment extends Fragment implements HttpContext {
 
-    private OkHttpClient httpClient;
     private Handler mainHandler;
 
     @Override
     @CallSuper
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        httpClient = new OkHttpClient();
         mainHandler = new Handler(Looper.getMainLooper());
     }
 
     @Override
     @CallSuper
     public void onDestroy() {
-        httpClient.dispatcher().cancelAll();
         super.onDestroy();
     }
 
@@ -43,7 +40,7 @@ public class BaseFragment extends Fragment implements HttpContext {
 
     @Override
     public OkHttpClient getHttpClient() {
-        return httpClient;
+        return getParentActivity().getHttpClient();
     }
 
     @Override
@@ -53,5 +50,9 @@ public class BaseFragment extends Fragment implements HttpContext {
 
     public BaseActivity getParentActivity() {
         return (BaseActivity) getActivity();
+    }
+
+    public final BaseFragment getFragment() {
+        return this;
     }
 }

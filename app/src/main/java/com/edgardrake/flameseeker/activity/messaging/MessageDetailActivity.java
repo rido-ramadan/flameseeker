@@ -55,15 +55,15 @@ public class MessageDetailActivity extends BaseActivity {
                 headers.put("Content-Type", "application/json");
                 headers.put("Authorization", "key=" + getString(R.string.server_key));
 
-                String json = getString(R.string.json_notification_fcm_payload, FirebaseInstanceId.getInstance().getToken());
+                String json = getString(R.string.json_notification_fcm_payload,
+                    FirebaseInstanceId.getInstance().getToken());
                 Log.d("HTTP.POST.JSON", json);
 
                 HTTP.POST(getActivity(), "https://fcm.googleapis.com/fcm/send", headers, json,
-                    new HTTP.RequestCallback() {
+                    new HTTP.RequestCallback<String>() {
                         @Override
                         public void onSuccess(String response) throws IOException {
                             Log.d("Push", response);
-//                            Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override

@@ -3,9 +3,11 @@ package com.edgardrake.flameseeker.activity.images;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -92,20 +94,37 @@ public class MultiImagePickerFragment extends BaseFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_done).setVisible(true);
+        menu.findItem(R.id.action_done).setVisible(count > 1);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                getParentActivity().setResult(Activity.RESULT_OK,
-                    new Intent().putStringArrayListExtra(SELECTED_IMAGE_PATHS, selectedPaths));
-                getParentActivity().finish();
+                actionDoneChooseImage();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT ||
+            newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ((GridLayoutManager) mImageList.getLayoutManager())
+                .setSpanCount(getResources().getInteger(R.integer.image_column_count));
+        }
+    }
+
+    /**
+     * Finish choosing the image, send list of strings contains the accessible image path for upload
+     */
+    private void actionDoneChooseImage() {
+        getParentActivity().setResult(Activity.RESULT_OK,
+            new Intent().putStringArrayListExtra(SELECTED_IMAGE_PATHS, selectedPaths));
+        getParentActivity().finish();
     }
 
     class ImageHolder extends DraggableRecyclerViewHolder {
@@ -158,7 +177,10 @@ public class MultiImagePickerFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     if (count != null) { // count != null, respect the limit count
-                        if (!selectedPaths.contains(image.getPath()) && !holder.isChecked()) {
+                        if (count == 1) {  // special case, count 1 means choose an image means done
+                            selectedPaths.add(image.getPath());
+                            actionDoneChooseImage();
+                        } else if (!selectedPaths.contains(image.getPath()) && !holder.isChecked()) {
                             if (selectedPaths.size() < count) {  // count isn't reached
                                 selectedPaths.add(image.getPath());
                                 holder.toggle();

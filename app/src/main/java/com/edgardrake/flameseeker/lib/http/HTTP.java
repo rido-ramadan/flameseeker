@@ -6,9 +6,12 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.data.Serializer;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -40,8 +43,8 @@ public class HTTP {
      */
     private static final boolean CONFIG_MANAGED_PER_CONTEXT = false;
 
-    public interface RequestCallback {
-        void onSuccess(String response) throws IOException;
+    public interface RequestCallback<T> {
+        void onSuccess(T response) throws IOException;
         void onFailure(IOException e);
     }
 
@@ -63,8 +66,8 @@ public class HTTP {
      *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      * @see <a href="https://github.com/square/okhttp/wiki/Recipes">wiki/recipes</a>
      */
-    private static void call(final HttpContext requester, Request request,
-                             final RequestCallback callback) {
+    private static <T> void call(final HttpContext requester, Request request,
+                                 final RequestCallback<T> callback) {
 
         final OkHttpClient httpClient = CONFIG_MANAGED_PER_CONTEXT?
             requester.getHttpClient() : getSingletonHttpClient();
@@ -84,11 +87,17 @@ public class HTTP {
             public void onResponse(Call call, final Response response) throws IOException {
                 final String stringResponse = response.body().string();
                 logSuccess(stringResponse);
+
+                // To perform callback on UI-thread, callback must be run on context main handler
                 requester.getMainHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            callback.onSuccess(stringResponse);
+                            // Serializing string response to specified object of class T
+                            Type type = new TypeToken<T>(){}.getType();
+                            T objectResponse = Serializer.GSON().fromJson(stringResponse, type);
+                            // Perform developer-defined callback
+                            callback.onSuccess(objectResponse);
                         } catch (IOException e) {
                             logError(requester.getContext(), e);
                         }
@@ -108,8 +117,8 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      */
-    public static void GET(HttpContext requester, String url, Map<String, String> headers,
-                           RequestCallback callback) {
+    public static <T> void GET(HttpContext requester, String url, Map<String, String> headers,
+                               RequestCallback<T> callback) {
         Request.Builder builder = new Request.Builder().url(url);
         if (headers != null)
             for (String key : headers.keySet()) {
@@ -130,8 +139,8 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link BaseActivity.RequestCallback}
      */
-    public static void POST(HttpContext requester, String url, Map<String, String> headers,
-                            Map<String, String> form, RequestCallback callback) {
+    public static <T> void POST(HttpContext requester, String url, Map<String, String> headers,
+                                Map<String, String> form, RequestCallback<T> callback) {
         FormBody.Builder formBody = new FormBody.Builder();
         if (form != null)
             for (String key : form.keySet()) {
@@ -160,9 +169,9 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link RequestCallback}
      */
-    public static void POST(HttpContext requester, String url, Map<String, String> headers,
-                            Map<String, String> form, Map<String, File> files,
-                            RequestCallback callback) {
+    public static <T> void POST(HttpContext requester, String url, Map<String, String> headers,
+                                Map<String, String> form, Map<String, File> files,
+                                RequestCallback<T> callback) {
         MultipartBody.Builder multipartBody = new MultipartBody.Builder();
         if (form != null)
             for (String key : form.keySet()) {
@@ -199,8 +208,8 @@ public class HTTP {
      * @param callback Callback function to be called when request has finished. Must be implemented
      *                 by hand in respective activity. {@link RequestCallback}
      */
-    public static void POST(HttpContext requester, String url, Map<String, String> headers,
-                            String json, RequestCallback callback) {
+    public static <T> void POST(HttpContext requester, String url, Map<String, String> headers,
+                                String json, RequestCallback<T> callback) {
         RequestBody body =
             RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
 

@@ -112,21 +112,29 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCont
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
-        if (mToolbar != null) setSupportActionBar(mToolbar);
+        initializeBasicComponents();
     }
 
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
         ButterKnife.bind(this);
-        if (mToolbar != null) setSupportActionBar(mToolbar);
+        initializeBasicComponents();
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         super.setContentView(view, params);
         ButterKnife.bind(this);
-        if (mToolbar != null) setSupportActionBar(mToolbar);
+        initializeBasicComponents();
+    }
+
+    private void initializeBasicComponents() {
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            assert getSupportActionBar() != null;
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     /**
@@ -157,6 +165,9 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCont
         if (item.getItemId() == android.R.id.home &&
             getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            finish();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
