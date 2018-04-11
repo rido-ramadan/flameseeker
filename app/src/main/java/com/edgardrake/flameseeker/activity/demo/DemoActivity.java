@@ -13,7 +13,9 @@ import android.view.MenuItem;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.demo.fragment.CarouselFragment;
+import com.edgardrake.flameseeker.activity.demo.fragment.CurrencyEditTextFragment;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.widget.textview.CurrencyEditText;
 
 import butterknife.BindView;
 
@@ -82,8 +84,8 @@ public class DemoActivity extends BaseActivity implements OnNavigationItemSelect
 
         if (id == R.id.nav_carousel) {
             setFragment(CarouselFragment.newInstance());
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_currency_edit_text) {
+            setFragment(CurrencyEditTextFragment.newInstance());
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
