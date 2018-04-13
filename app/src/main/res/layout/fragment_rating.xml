@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             app:enabled="true"
             app:maxRating="5"
-            app:width="36dp"
+            app:width="40dp"
             app:rating="1"
             app:tint="@color/colorAccent"/>
 

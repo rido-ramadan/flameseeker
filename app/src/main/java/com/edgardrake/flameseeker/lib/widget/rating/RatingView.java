@@ -6,16 +6,16 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.utilities.NumberUtils;
 
-public class RatingView extends LinearLayout {
+public class RatingView extends GridLayout {
 
     private ImageView[] mStars;
 
@@ -57,6 +57,8 @@ public class RatingView extends LinearLayout {
                 R.drawable.ic_star_full_white_24dp);
 
             maxRating = a.getInt(R.styleable.RatingView_maxRating, 5);
+            setColumnCount(maxRating);
+
             radius = a.getDimensionPixelSize(
                 R.styleable.RatingView_width, NumberUtils.dpToPx(20));
             tintColor = a.getColor(R.styleable.RatingView_tint,
