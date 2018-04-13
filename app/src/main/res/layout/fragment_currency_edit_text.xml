@@ -13,13 +13,15 @@
         android:id="@+id/price_input_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Input price 1 here"/>
+        android:hint="Input price 1 here"
+        android:inputType="number"/>
 
     <com.edgardrake.flameseeker.lib.widget.textview.CurrencyEditText
         android:id="@+id/price_input_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Input price 2 here"/>
+        android:hint="Input price 2 here"
+        android:inputType="number"/>
 
     <TextView
         android:id="@+id/price_sum"
