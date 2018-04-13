@@ -75,7 +75,11 @@ public class CurrencyEditText extends AppCompatEditText
     private void applyAttributeSet(AttributeSet attrs) {
         TypedArray set = getContext().obtainStyledAttributes(attrs, R.styleable.CurrencyEditText);
         try {
-            maxValue = set.getInteger(R.styleable.CurrencyEditText_maxValue, INVALID_VALUE);
+            maxValue = set.getInt(R.styleable.CurrencyEditText_maxValue, INVALID_VALUE);
+            value = set.getInt(R.styleable.CurrencyEditText_value, INVALID_VALUE);
+            if (value != INVALID_VALUE) {
+                setText(String.valueOf(value));
+            }
         } finally {
             set.recycle();
         }

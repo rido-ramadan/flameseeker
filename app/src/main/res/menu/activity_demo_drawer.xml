@@ -9,13 +9,17 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="Carousel"/>
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow"/>
+            android:id="@+id/nav_currency_edit_text"
+            android:icon="@drawable/ic_attach_money_white_24dp"
+            android:title="Currency Edit Text"/>
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Multiple Image Picker"/>
+        <item
+            android:id="@+id/nav_rating"
+            android:icon="@drawable/ic_star_full_white_24dp"
+            android:title="Rating"/>
     </group>
 
     <item android:title="Communicate">

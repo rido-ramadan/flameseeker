@@ -4,10 +4,22 @@
     <declare-styleable name="CurrencyEditText">
         <attr name="maxValue" format="integer"/>
         <attr name="minValue" format="integer"/>
+        <attr name="value" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="CarouselView">
         <attr name="delay" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="RatingView">
+        <attr name="rating" format="float"/>
+        <attr name="width" format="dimension"/>
+        <attr name="maxRating" format="integer"/>
+        <attr name="drawableFilled" format="reference"/>
+        <attr name="drawableHalf" format="reference"/>
+        <attr name="drawableEmpty" format="reference"/>
+        <attr name="tint" format="color"/>
+        <attr name="enabled" format="boolean"/>
     </declare-styleable>
 
 </resources>

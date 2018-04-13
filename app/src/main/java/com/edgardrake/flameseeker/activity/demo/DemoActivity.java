@@ -1,6 +1,8 @@
 package com.edgardrake.flameseeker.activity.demo;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.app.Fragment;
@@ -13,7 +15,11 @@ import android.view.MenuItem;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.demo.fragment.CarouselFragment;
+import com.edgardrake.flameseeker.activity.demo.fragment.CurrencyEditTextFragment;
+import com.edgardrake.flameseeker.activity.demo.fragment.RatingFragment;
+import com.edgardrake.flameseeker.activity.demo.fragment.SmallGalleryFragment;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
+import com.edgardrake.flameseeker.lib.widget.textview.CurrencyEditText;
 
 import butterknife.BindView;
 
@@ -82,17 +88,24 @@ public class DemoActivity extends BaseActivity implements OnNavigationItemSelect
 
         if (id == R.id.nav_carousel) {
             setFragment(CarouselFragment.newInstance());
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.nav_currency_edit_text) {
+            setFragment(CurrencyEditTextFragment.newInstance());
+        } else if (id == R.id.nav_gallery) {
+            setFragment(SmallGalleryFragment.newInstance());
+        } else if (id == R.id.nav_rating) {
+            setFragment(RatingFragment.newInstance());
         } else if (id == R.id.nav_send) {
 
         }
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    @CallSuper
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        activeFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setFragment(Fragment fragment) {
