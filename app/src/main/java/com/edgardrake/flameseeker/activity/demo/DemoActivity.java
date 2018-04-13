@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.demo.fragment.CarouselFragment;
 import com.edgardrake.flameseeker.activity.demo.fragment.CurrencyEditTextFragment;
+import com.edgardrake.flameseeker.activity.demo.fragment.RatingFragment;
 import com.edgardrake.flameseeker.activity.demo.fragment.SmallGalleryFragment;
 import com.edgardrake.flameseeker.lib.base.BaseActivity;
 import com.edgardrake.flameseeker.lib.widget.textview.CurrencyEditText;
@@ -91,8 +92,8 @@ public class DemoActivity extends BaseActivity implements OnNavigationItemSelect
             setFragment(CurrencyEditTextFragment.newInstance());
         } else if (id == R.id.nav_gallery) {
             setFragment(SmallGalleryFragment.newInstance());
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.nav_rating) {
+            setFragment(RatingFragment.newInstance());
         } else if (id == R.id.nav_send) {
 
         }
