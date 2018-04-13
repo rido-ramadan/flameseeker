@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -70,6 +71,7 @@ public class CurrencyEditText extends AppCompatEditText
     private void initializeEditText() {
         addTextChangedListener(this);
         setOnFocusChangeListener(this);
+        setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
     private void applyAttributeSet(AttributeSet attrs) {
