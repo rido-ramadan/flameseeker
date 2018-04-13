@@ -15,11 +15,10 @@
 
         <com.edgardrake.flameseeker.lib.widget.rating.RatingView
             android:id="@+id/rating_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:enabled="true"
-            app:maxRating="5"
-            app:width="40dp"
+            app:maxRating="10"
             app:rating="1"
             app:tint="@color/colorAccent"/>
 

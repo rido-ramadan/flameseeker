@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,10 +67,15 @@ public class RatingFragment extends Fragment {
         mApplyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int maxRating = Integer.parseInt(mMaxRating.getText().toString());
-                double currentRating = Double.parseDouble(mCurrentRating.getText().toString());
-                mRating.setMaxRating(maxRating);
-                mRating.setRating(currentRating);
+                if (!TextUtils.isEmpty(mMaxRating.getText())) {
+                    int maxRating = Integer.parseInt(mMaxRating.getText().toString());
+                    mRating.setMaxRating(maxRating);
+                }
+
+                if (!TextUtils.isEmpty(mCurrentRating.getText())) {
+                    double currentRating = Double.parseDouble(mCurrentRating.getText().toString());
+                    mRating.setRating(currentRating);
+                }
             }
         });
     }

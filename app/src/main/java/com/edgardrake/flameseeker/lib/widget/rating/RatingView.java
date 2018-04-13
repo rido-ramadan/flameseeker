@@ -8,9 +8,11 @@ import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.lib.utilities.NumberUtils;
@@ -101,7 +103,9 @@ public class RatingView extends GridLayout {
                 listener.OnRatingChanged(this.rating);
             }
         } else {
-            throw new RuntimeException("Number must be between 0 - " + mStars.length);
+            Toast.makeText(getContext(), "Number must be between 0 - " + mStars.length,
+                Toast.LENGTH_SHORT).show();
+            Log.e("RatingView", "Number must be between 0 - " + mStars.length);
         }
     }
 
