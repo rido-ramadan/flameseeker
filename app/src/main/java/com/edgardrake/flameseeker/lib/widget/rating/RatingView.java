@@ -2,6 +2,7 @@ package com.edgardrake.flameseeker.lib.widget.rating;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
@@ -78,11 +79,15 @@ public class RatingView extends GridLayout {
         }
     }
 
+    /**
+     * Set the current rating with the specified rounding algorithm
+     * @param rating Decimal number of rating. Above 0 and below max rating star.
+     */
     public void setRating(double rating) {
         if (rating >= 0 && rating <= mStars.length) {
             this.rating = rating;
 
-            double roundedRating = Math.round(rating * 2) * 0.5;
+            double roundedRating = getRoundedRating(rating);
             int major = (int) roundedRating;
             double point = roundedRating - major;
             for (int i = 0; i < major; i++) {
@@ -109,13 +114,36 @@ public class RatingView extends GridLayout {
         }
     }
 
+    /**
+     * Overridable method for get rounded rating. This method is automatically called when method
+     * {@link #setRating(double)} is called. Default implementation:<br/>
+     * {@code Math.round(rating * 2) * 0.5}
+     * @param rating Raw value of rating to be rounded
+     * @return Rounded rating. Default implementation allow 0.25 to be rounded to 0.5
+     */
+    @CallSuper
+    protected double getRoundedRating(double rating) {
+        return Math.round(rating * 2) * 0.5;
+    }
+
+    /**
+     * @return Currently stored rating. As long as user doesn't click the rating star (to edit), the
+     * value will always retain the default stored rating.
+     */
     public double getRating() {
         return rating;
     }
 
+    /**
+     * Set max star in horizontal column to be shown. Giving number too big will cause render error.
+     * @param maxRating Number of max stars. Best practice is to use number either 3, 5, or 10.
+     */
     public void setMaxRating(int maxRating) {
         // Clear all view first
         removeAllViews();
+
+        // Set column count
+        setColumnCount(maxRating);
 
         mStars = new ImageView[maxRating];
         for (int i = 0; i < maxRating; i++) {
