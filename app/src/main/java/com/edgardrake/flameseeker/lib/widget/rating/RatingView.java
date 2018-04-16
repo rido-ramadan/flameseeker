@@ -28,11 +28,11 @@ public class RatingView extends GridLayout {
     private int tintColor;
     private boolean isEnabled;
 
-    @DrawableRes private int drawableEmpty;
-    @DrawableRes private int drawableHalf;
-    @DrawableRes private int drawableFilled;
+    @DrawableRes protected int drawableEmpty;
+    @DrawableRes protected int drawableHalf;
+    @DrawableRes protected int drawableFilled;
 
-    @Nullable RatingChangedListener listener;
+    @Nullable protected RatingChangedListener listener;
 
     public RatingView(Context context) {
         this(context, null);
@@ -105,7 +105,7 @@ public class RatingView extends GridLayout {
             }
 
             if (listener != null) {
-                listener.OnRatingChanged(this.rating);
+                listener.onRatingChanged(this.rating);
             }
         } else {
             Toast.makeText(getContext(), "Number must be between 0 - " + mStars.length,
@@ -195,9 +195,5 @@ public class RatingView extends GridLayout {
                 if (mStar != null) mStar.setEnabled(enabled);
             }
         }
-    }
-
-    public interface RatingChangedListener {
-        void OnRatingChanged(double rating);
     }
 }
