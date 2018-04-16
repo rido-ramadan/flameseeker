@@ -18,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:enabled="true"
-            app:maxRating="10"
-            app:rating="1"
-            app:tint="@color/colorAccent"/>
+            app:maxRating="5"
+            app:rating="2.8"
+            app:tint="@android:color/holo_orange_light"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
