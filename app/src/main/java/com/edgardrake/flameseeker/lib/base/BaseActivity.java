@@ -1,14 +1,18 @@
 package com.edgardrake.flameseeker.lib.base;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -172,6 +176,29 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCont
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Check whether this app package has the specified permission(s)
+     * @param permissions Array of string permission to be checked
+     * @return True if <b>all</b> permission is granted, otherwise false
+     */
+    public boolean hasPermissions(@NonNull String... permissions) {
+        boolean hasPermission = true;
+        for (String permission : permissions) {
+            hasPermission = hasPermission && ContextCompat.checkSelfPermission(this, permission) ==
+                PackageManager.PERMISSION_GRANTED;
+        }
+        return hasPermission;
+    }
+
+    /**
+     * Perform request for specified permission(s)
+     * @param requestCode Unique code for request. Specific code usually tied to specific case
+     * @param permissions Strings of permission(s) to be asked for grant
+     */
+    public void requestPermissions(int requestCode, @NonNull String... permissions) {
+        ActivityCompat.requestPermissions(getActivity(), permissions, requestCode);
     }
 
     /**

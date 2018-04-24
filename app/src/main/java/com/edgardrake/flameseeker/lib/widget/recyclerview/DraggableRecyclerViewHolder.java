@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.edgardrake.flameseeker.lib.utilities.NumberUtils;
@@ -62,5 +63,10 @@ public abstract class DraggableRecyclerViewHolder extends RecyclerView.ViewHolde
     protected void onItemReleased() {
         itemView.setBackgroundColor(Color.WHITE);
         ViewCompat.setElevation(itemView, defaultElevation);
+    }
+
+    public DraggableRecyclerViewHolder setOnClickListener(OnClickListener onClickListener) {
+        itemView.setOnClickListener(onClickListener);
+        return this;
     }
 }

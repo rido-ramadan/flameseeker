@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.edgardrake.flameseeker.R;
+import com.edgardrake.flameseeker.lib.widget.rating.RatingChangedListener;
 import com.edgardrake.flameseeker.lib.widget.rating.RatingView;
 
 import java.util.Locale;
@@ -56,9 +57,9 @@ public class RatingFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mRating.setOnRatingChangedListener(new RatingView.RatingChangedListener() {
+        mRating.setOnRatingChangedListener(new RatingChangedListener() {
             @Override
-            public void OnRatingChanged(double rating) {
+            public void onRatingChanged(double rating) {
                 Toast.makeText(getContext(), String.format(Locale.getDefault(),
                     "Rating : %f", rating), Toast.LENGTH_SHORT).show();
             }

@@ -14,15 +14,15 @@ import java.util.List;
  */
 public class Dropdown extends AppCompatSpinner {
 
-    OnItemSelectedListener listener;
-
-    public Dropdown(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setBackgroundResource(android.R.color.transparent);
-    }
+    private OnItemSelectedListener listener;
 
     public Dropdown(Context context) {
         super(context);
+        setBackgroundResource(android.R.color.transparent);
+    }
+
+    public Dropdown(Context context, AttributeSet attrs) {
+        super(context, attrs);
         setBackgroundResource(android.R.color.transparent);
     }
 

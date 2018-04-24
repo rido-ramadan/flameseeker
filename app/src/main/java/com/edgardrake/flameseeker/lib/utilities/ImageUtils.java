@@ -1,15 +1,25 @@
 package com.edgardrake.flameseeker.lib.utilities;
 
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.images.util.AlbumEntry;
 import com.edgardrake.flameseeker.activity.images.util.ImageEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by Edgar Drake on 18-Sep-17.
@@ -62,11 +72,23 @@ public class ImageUtils {
                 cursor.getString(columnImagePath),
                 cursor.getLong(columnImageDate));
             album.addImage(image);
-
-            // Log.d("Gallery", String.format("%1$s    | %2$s", album.toString(), image.toString()));
         }
         cursor.close();
 
         return albums;
+    }
+
+    public static void showImagePreview(Context context, Object imageSource) {
+        View mDialog = LayoutInflater.from(context).inflate(R.layout.dialog_image_preview, null);
+        ImageView mPreview = ButterKnife.findById(mDialog, R.id.image_preview);
+        Glide.with(context).load(imageSource).into(mPreview);
+
+        new AlertDialog.Builder(context)
+            .setView(mDialog)
+            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {}
+            })
+            .create().show();
     }
 }

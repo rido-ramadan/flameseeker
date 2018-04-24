@@ -37,8 +37,6 @@ import butterknife.ButterKnife;
  */
 public class MultiImagePickerFragment extends BaseFragment {
 
-    public static final String SELECTED_IMAGE_PATHS = "selected";
-
     private static final String ALBUM_ENTRY = "album_entry";
     private static final String LIMIT = "max_count";
 
@@ -123,7 +121,8 @@ public class MultiImagePickerFragment extends BaseFragment {
      */
     private void actionDoneChooseImage() {
         getParentActivity().setResult(Activity.RESULT_OK,
-            new Intent().putStringArrayListExtra(SELECTED_IMAGE_PATHS, selectedPaths));
+            new Intent().putStringArrayListExtra(
+                MultiImagePickerActivity.SELECTED_IMAGE_PATHS, selectedPaths));
         getParentActivity().finish();
     }
 

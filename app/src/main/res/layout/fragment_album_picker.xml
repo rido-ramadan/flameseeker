@@ -12,7 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        app:layoutManager="GridLayoutManager"
+        android:padding="1dp"
+        android:clipToPadding="false"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
         app:spanCount="@integer/album_column_count"
         tools:listitem="@layout/grid_album"/>
 

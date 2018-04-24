@@ -20,6 +20,10 @@
             android:id="@+id/nav_rating"
             android:icon="@drawable/ic_star_full_white_24dp"
             android:title="Rating"/>
+        <item
+            android:id="@+id/nav_dropdown"
+            android:icon="@drawable/ic_format_list_bulleted_black_24dp"
+            android:title="Dropdown"/>
     </group>
 
     <item android:title="Communicate">
