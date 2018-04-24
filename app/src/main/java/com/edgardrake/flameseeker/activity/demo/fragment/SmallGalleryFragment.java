@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.images.MultiImagePickerActivity;
-import com.edgardrake.flameseeker.activity.images.MultiImagePickerFragment;
+import com.edgardrake.flameseeker.lib.utilities.ImageUtils;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewAdapter;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewHolder;
 
@@ -91,7 +92,7 @@ public class SmallGalleryFragment extends Fragment {
             switch (requestCode) {
                 case OPEN_GALLERY:
                     ArrayList<String> imagePaths = data.getStringArrayListExtra(
-                        MultiImagePickerFragment.SELECTED_IMAGE_PATHS);
+                        MultiImagePickerActivity.SELECTED_IMAGE_PATHS);
 
                     int startInsertionPoint = images.size();
                     int length = imagePaths.size();
@@ -123,7 +124,14 @@ public class SmallGalleryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ImageHolder holder, int position) {
-            holder.setFile(images.get(holder.getAdapterPosition()));
+            final File imageFile = images.get(holder.getAdapterPosition());
+            holder.setFile(imageFile)
+                .setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ImageUtils.showImagePreview(getContext(), imageFile);
+                    }
+                });
         }
 
         @Override
@@ -169,6 +177,12 @@ public class SmallGalleryFragment extends Fragment {
             this.setImage(imageFile)
                 .setUri(imageFile.getAbsolutePath())
                 .setSize(imageFile.length() / 1024);
+            return this;
+        }
+
+        @Override
+        public ImageHolder setOnClickListener(OnClickListener onClickListener) {
+            super.setOnClickListener(onClickListener);
             return this;
         }
     }

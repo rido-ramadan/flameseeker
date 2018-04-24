@@ -1,5 +1,6 @@
 package com.edgardrake.flameseeker.activity.authentication;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -107,7 +108,7 @@ public class UserListActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == OPEN_GALLERY_PICKER) {
             ArrayList<String> paths =
-                data.getStringArrayListExtra(MultiImagePickerFragment.SELECTED_IMAGE_PATHS);
+                data.getStringArrayListExtra(MultiImagePickerActivity.SELECTED_IMAGE_PATHS);
             Logger logger = Logger.log(getContext());
             for (String path : paths) {
                 logger.addEntry("Path", path);
