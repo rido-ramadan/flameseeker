@@ -1,5 +1,6 @@
 package com.edgardrake.flameseeker.activity.authentication;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +30,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UserListActivity extends BaseActivity {
+
+    private static final int OPEN_GALLERY_PICKER = 0x512;
 
     @BindView(R.id.user_list)
     RecyclerView mUserList;
@@ -70,7 +73,7 @@ public class UserListActivity extends BaseActivity {
             public void onClick(View v) {
                 AuthUser user = AuthUser.getInstance(getContext());
                 String prevEmail = user.getEmail();
-                if (user.getEmail().equals("regulus@drake.com")) {
+                if ("regulus@drake.com".equals(user.getEmail())) {
                     user.edit().setEmail("rytlock@ascalon.com").commit();
                 } else {
                     user.edit().setEmail("regulus@drake.com").commit();
@@ -83,7 +86,8 @@ public class UserListActivity extends BaseActivity {
         mOpenGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MultiImagePickerActivity.startThisActivityForResult(getActivity(), 10, 100);
+                MultiImagePickerActivity.startThisActivityForResult(
+                    getActivity(), dataset.size(), OPEN_GALLERY_PICKER);
             }
         });
     }
@@ -102,9 +106,9 @@ public class UserListActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == 100) {
+        if (resultCode == RESULT_OK && requestCode == OPEN_GALLERY_PICKER) {
             ArrayList<String> paths =
-                data.getStringArrayListExtra(MultiImagePickerFragment.SELECTED_IMAGE_PATHS);
+                data.getStringArrayListExtra(MultiImagePickerActivity.SELECTED_IMAGE_PATHS);
             Logger logger = Logger.log(getContext());
             for (String path : paths) {
                 logger.addEntry("Path", path);

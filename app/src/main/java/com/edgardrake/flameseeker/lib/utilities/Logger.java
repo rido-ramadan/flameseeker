@@ -38,6 +38,7 @@ public class Logger {
         if (logger == null) {
             logger = new Logger(context);
         }
+        logger.entries.clear();
         return logger;
     }
 
@@ -69,7 +70,8 @@ public class Logger {
         TextView mValue;
 
         private EntryHolder(ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_logging, parent, false));
+            super(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.row_logging, parent, false));
             ButterKnife.bind(this, itemView);
         }
     }

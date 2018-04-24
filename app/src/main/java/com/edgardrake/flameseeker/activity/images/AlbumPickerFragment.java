@@ -1,7 +1,13 @@
 package com.edgardrake.flameseeker.activity.images;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.edgardrake.flameseeker.R;
@@ -31,6 +38,8 @@ import butterknife.ButterKnife;
 public class AlbumPickerFragment extends BaseFragment {
 
     private static final String LIMIT = "limit";
+
+    private static final int REQUEST_PERMISSION_STORAGE = 0x32;
 
     @BindView(R.id.album_list)
     RecyclerView mAlbumList;
@@ -78,15 +87,70 @@ public class AlbumPickerFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (albums.isEmpty()) {
-            albums.addAll(ImageUtils.getAllAlbums(getContext()));
-            mAlbumList.getAdapter().notifyItemRangeInserted(0, albums.size());
+
+        if (ContextCompat.checkSelfPermission(getContext(),
+            Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            openGalleryAlbum();  // Having storage permission will allow us to open the gallery
+        } else {
+            // Open request permission
+            String[] permissions = new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+            requestPermissions(permissions, REQUEST_PERMISSION_STORAGE);
         }
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_done).setVisible(false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_STORAGE:
+                if (grantResults.length > 0) {
+                    boolean isGranted = true;
+                    for (int grantResult : grantResults) {
+                        if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                            isGranted = false;
+                            break;
+                        }
+                    }
+
+                    // Permission granted if isGranted is true
+                    if (isGranted) {
+                        openGalleryAlbum();  // Album access is granted
+                    } else {
+                        Toast.makeText(getActivity(), R.string.permission_denied,
+                            Toast.LENGTH_SHORT).show();
+                        getParentActivity().finish();
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT ||
+            newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ((GridLayoutManager) mAlbumList.getLayoutManager())
+                .setSpanCount(getResources().getInteger(R.integer.album_column_count));
+        }
+    }
+
+    /**
+     * Perform storage provider query to get all available albums in the storage
+     */
+    private void openGalleryAlbum() {
+        if (albums.isEmpty()) {
+            albums.addAll(ImageUtils.getAllAlbums(getContext()));
+            mAlbumList.getAdapter().notifyItemRangeInserted(0, albums.size());
+        }
     }
 
     class AlbumHolder extends DraggableRecyclerViewHolder {

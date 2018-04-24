@@ -10,7 +10,18 @@
     <string name="title_activity_multi_image_picker">MultiImagePickerActivity</string>
     <string name="action_camera">Open Camera</string>
     <string name="action_done">Done</string>
+    <string name="choose_image_limit">Choose image (max: %d)</string>
     <string name="max_limit_reach">Max number of picture reached</string>
+
+    <string name="title_activity_demo">DemoActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="permission_denied">Permission Access Denied</string>
+    <string name="permission_request_error">Permission denied for the following:\n%s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -1,4 +1,4 @@
-package com.edgardrake.flameseeker.lib.widget;
+package com.edgardrake.flameseeker.lib.widget.imageview;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatImageView;

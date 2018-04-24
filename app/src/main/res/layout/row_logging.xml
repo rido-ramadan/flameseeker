@@ -27,6 +27,7 @@
         android:background="@drawable/background_divider_left"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="0dp"
+        android:paddingLeft="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         tools:text="Value"/>

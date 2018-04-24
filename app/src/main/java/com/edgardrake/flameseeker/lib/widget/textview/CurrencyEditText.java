@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -53,6 +54,10 @@ public class CurrencyEditText extends AppCompatEditText
         return value;
     }
 
+    public void setValue(long value) {
+        setText(String.valueOf(value));
+    }
+
     public void setMaxValue(long value) {
         maxValue = value;
 
@@ -66,12 +71,17 @@ public class CurrencyEditText extends AppCompatEditText
     private void initializeEditText() {
         addTextChangedListener(this);
         setOnFocusChangeListener(this);
+        setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
     private void applyAttributeSet(AttributeSet attrs) {
         TypedArray set = getContext().obtainStyledAttributes(attrs, R.styleable.CurrencyEditText);
         try {
-            maxValue = set.getInteger(R.styleable.CurrencyEditText_maxValue, INVALID_VALUE);
+            maxValue = set.getInt(R.styleable.CurrencyEditText_maxValue, INVALID_VALUE);
+            value = set.getInt(R.styleable.CurrencyEditText_value, INVALID_VALUE);
+            if (value != INVALID_VALUE) {
+                setText(String.valueOf(value));
+            }
         } finally {
             set.recycle();
         }

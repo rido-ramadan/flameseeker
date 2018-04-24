@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:theme="@style/Theme.AppCompat">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -21,6 +20,7 @@
         android:id="@+id/log_entries"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/background_divider_bottom"
         app:layoutManager="LinearLayoutManager"
         app:paddingStart="4dp"
         app:paddingEnd="4dp"

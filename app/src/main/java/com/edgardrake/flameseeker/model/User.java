@@ -2,6 +2,8 @@ package com.edgardrake.flameseeker.model;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.Locale;
+
 /**
  * Created by Edgar Drake on 05-Jul-17.
  */
@@ -15,6 +17,8 @@ public class User {
     private String username;
     @Expose
     private String name;
+
+    private User() {}
 
     public String getID() {
         return id;
@@ -37,6 +41,11 @@ public class User {
         this.email = builder.email;
         this.username = builder.username;
         this.name = builder.name;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.getDefault(), "%s-%s|%s", id, email, username);
     }
 
     public static class Builder {
