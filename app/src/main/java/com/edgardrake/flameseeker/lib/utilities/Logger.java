@@ -70,7 +70,8 @@ public class Logger {
         TextView mValue;
 
         private EntryHolder(ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_logging, parent, false));
+            super(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.row_logging, parent, false));
             ButterKnife.bind(this, itemView);
         }
     }
