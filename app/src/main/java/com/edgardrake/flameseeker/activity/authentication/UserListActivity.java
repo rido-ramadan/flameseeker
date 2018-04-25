@@ -86,8 +86,7 @@ public class UserListActivity extends BaseActivity {
         mOpenGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MultiImagePickerActivity.startThisActivityForResult(
-                    getActivity(), dataset.size(), OPEN_GALLERY_PICKER);
+
             }
         });
     }

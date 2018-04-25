@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -23,8 +24,14 @@ public class MultiImagePickerActivity extends BaseActivity {
 
     public static final String SELECTED_IMAGE_PATHS = "selected";
     private static final String LIMIT = "limit";
+    private static final String IS_CAMERA_ENABLED = "is_camera_enabled";
 
-    private int limit;
+    /**
+     * Hard limit of how many images can be taken in a single session
+     */
+    @Nullable private Integer limit;
+    private int current;
+    private boolean isCameraEnabled = true;
 
     private CameraUtils cameraUtil;
 
@@ -33,8 +40,13 @@ public class MultiImagePickerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_image_picker);
 
-        limit = getIntent().getIntExtra(LIMIT, 0);
-        getSupportActionBar().setTitle(getString(R.string.choose_image_limit, limit));
+        assert getSupportActionBar() != null;
+        int intentLimit = getIntent().getIntExtra(LIMIT, -1);
+        limit = intentLimit > -1? intentLimit : null;
+        getSupportActionBar().setTitle(getString(limit != null?
+            R.string.choose_image_limit : R.string.choose_image_unlimited, limit));
+
+        isCameraEnabled = getIntent().getBooleanExtra(IS_CAMERA_ENABLED, true);
 
         cameraUtil = new CameraUtils(getActivity(), new CameraCallback() {
             @Override
@@ -48,15 +60,20 @@ public class MultiImagePickerActivity extends BaseActivity {
             .commit();
     }
 
-    public static void startThisActivityForResult(Activity activity, int limit, int code) {
-        activity.startActivityForResult(
-            new Intent(activity, MultiImagePickerActivity.class).putExtra(LIMIT, limit),
+    private static void startThisActivityForResult(Activity activity,
+                                                   @Nullable Integer limit,
+                                                   boolean enableCamera,
+                                                   int code) {
+        activity.startActivityForResult(new Intent(activity, MultiImagePickerActivity.class)
+                .putExtra(LIMIT, limit)
+                .putExtra(IS_CAMERA_ENABLED, enableCamera),
             code);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_multi_image_picker, menu);
+        menu.findItem(R.id.action_open_camera).setVisible(isCameraEnabled);
         return true;
     }
 
@@ -97,11 +114,49 @@ public class MultiImagePickerActivity extends BaseActivity {
         cameraUtil.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Callback action when user has successfully captured an image with camera
+     * @param filePath File path to the recently taken image
+     */
     private void actionSetImageResult(@NonNull String filePath) {
         ArrayList<String> imagePaths = new ArrayList<>();
         imagePaths.add(filePath);
         setResult(Activity.RESULT_OK, new Intent().putStringArrayListExtra(
             MultiImagePickerActivity.SELECTED_IMAGE_PATHS, imagePaths));
         finish();
+    }
+
+    public static class Builder {
+
+        private Activity activity;
+        private int code;
+        private Integer limit;
+        private int current;
+        private boolean enableCamera;
+
+        public Builder(Activity activity, int code) {
+            this.activity = activity;
+            this.code = code;
+        }
+
+        public Builder setLimit(@Nullable Integer limit) {
+            this.limit = limit;
+            return this;
+        }
+
+        public Builder setCurrent(int current) {
+            this.current = current;
+            return this;
+        }
+
+        public Builder setCameraEnabled(boolean enabled) {
+            this.enableCamera = enabled;
+            return this;
+        }
+
+        public void build() {
+            MultiImagePickerActivity.startThisActivityForResult(
+                activity, limit, enableCamera, code);
+        }
     }
 }
