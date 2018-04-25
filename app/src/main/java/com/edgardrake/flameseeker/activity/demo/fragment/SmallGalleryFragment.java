@@ -79,8 +79,8 @@ public class SmallGalleryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 new MultiImagePickerActivity.Builder(getActivity(), OPEN_GALLERY)
-                    .setLimit(null)
-                    //.setLimit(100 - images.size())
+                    //.setLimit(null)
+                    .setLimit(10 - images.size())
                     .setCurrent(0)
                     .setCameraEnabled(false)
                     .build();

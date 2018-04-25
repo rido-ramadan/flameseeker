@@ -12,6 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/overlay_image_transparent"
+        android:layout_alignTop="@id/album_thumbnail"
+        android:layout_alignBottom="@id/album_thumbnail"/>
+
     <TextView
         android:id="@+id/album_name"
         android:layout_width="match_parent"

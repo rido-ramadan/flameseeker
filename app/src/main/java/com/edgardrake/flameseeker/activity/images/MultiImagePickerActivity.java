@@ -60,7 +60,7 @@ public class MultiImagePickerActivity extends BaseActivity {
             .commit();
     }
 
-    private static void startThisActivityForResult(Activity activity,
+    private static void startThisActivityForResult(@NonNull Activity activity,
                                                    @Nullable Integer limit,
                                                    boolean enableCamera,
                                                    int code) {
@@ -128,13 +128,13 @@ public class MultiImagePickerActivity extends BaseActivity {
 
     public static class Builder {
 
-        private Activity activity;
+        @NonNull private Activity activity;
         private int code;
-        private Integer limit;
+        @Nullable private Integer limit;
         private int current;
         private boolean enableCamera;
 
-        public Builder(Activity activity, int code) {
+        public Builder(@NonNull Activity activity, int code) {
             this.activity = activity;
             this.code = code;
         }
