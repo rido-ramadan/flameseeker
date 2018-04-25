@@ -22,7 +22,6 @@ import com.edgardrake.flameseeker.R;
 import com.edgardrake.flameseeker.activity.images.util.AlbumEntry;
 import com.edgardrake.flameseeker.activity.images.util.ImageEntry;
 import com.edgardrake.flameseeker.lib.base.BaseFragment;
-import com.edgardrake.flameseeker.lib.utilities.Logger;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewAdapter;
 import com.edgardrake.flameseeker.lib.widget.recyclerview.DraggableRecyclerViewHolder;
 
@@ -43,11 +42,11 @@ public class MultiImagePickerFragment extends BaseFragment {
     @BindView(R.id.image_list)
     RecyclerView mImageList;
 
-    private Integer count;
+    @Nullable private Integer count;
     private List<ImageEntry> images;
     private ArrayList<String> selectedPaths;
 
-    public static MultiImagePickerFragment newInstance(AlbumEntry album, int limit) {
+    public static MultiImagePickerFragment newInstance(AlbumEntry album, @Nullable Integer limit) {
         MultiImagePickerFragment fragment = new MultiImagePickerFragment();
         Bundle args = new Bundle();
         args.putSerializable(ALBUM_ENTRY, album);
@@ -65,7 +64,7 @@ public class MultiImagePickerFragment extends BaseFragment {
         setHasOptionsMenu(true);
         images = new ArrayList<>();
         images.addAll(((AlbumEntry) getArguments().getSerializable(ALBUM_ENTRY)).getImages());
-        count = getArguments().getInt(LIMIT);
+        count = (Integer) getArguments().getSerializable(LIMIT);
         selectedPaths = new ArrayList<>();
     }
 
@@ -92,7 +91,7 @@ public class MultiImagePickerFragment extends BaseFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_done).setVisible(count > 1);
+        menu.findItem(R.id.action_done).setVisible(count == null || count > 1);
     }
 
     @Override

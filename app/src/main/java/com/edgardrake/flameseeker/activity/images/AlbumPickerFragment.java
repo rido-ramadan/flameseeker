@@ -45,12 +45,12 @@ public class AlbumPickerFragment extends BaseFragment {
     RecyclerView mAlbumList;
 
     private List<AlbumEntry> albums;
-    private int limit;
+    @Nullable private Integer limit;
 
-    public static AlbumPickerFragment newInstance(int limit) {
+    public static AlbumPickerFragment newInstance(@Nullable Integer limit) {
         AlbumPickerFragment fragment = new AlbumPickerFragment();
         Bundle args = new Bundle();
-        args.putInt(LIMIT, limit);
+        args.putSerializable(LIMIT, limit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,7 +64,7 @@ public class AlbumPickerFragment extends BaseFragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         albums = new ArrayList<>();
-        limit = getArguments().getInt(LIMIT, 0);
+        limit = (Integer) getArguments().getSerializable(LIMIT);
     }
 
     @Override

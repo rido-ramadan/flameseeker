@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -23,8 +25,25 @@ public class MultiImagePickerActivity extends BaseActivity {
 
     public static final String SELECTED_IMAGE_PATHS = "selected";
     private static final String LIMIT = "limit";
+    private static final String IS_CAMERA_ENABLED = "is_camera_enabled";
+    private static final String TITLE_WITH_LIMIT = "title_with_limit";
+    private static final String TITLE_NO_LIMIT = "title_no_limit";
 
-    private int limit;
+    private static final int DEFAULT_ID_TITLE_WITH_LIMIT = R.string.choose_image_limit;
+    private static final int DEFAULT_ID_TITLE_NO_LIMIT = R.string.choose_image_unlimited;
+
+    /**
+     * Hard limit of how many images can be taken in a single session
+     */
+    @Nullable private Integer limit;
+    private int current;
+    /**
+     *
+     */
+    private boolean isCameraEnabled = true;
+
+    @StringRes private int titleWithLimit;
+    @StringRes private int titleNoLimit;
 
     private CameraUtils cameraUtil;
 
@@ -33,8 +52,17 @@ public class MultiImagePickerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_image_picker);
 
-        limit = getIntent().getIntExtra(LIMIT, 0);
-        getSupportActionBar().setTitle(getString(R.string.choose_image_limit, limit));
+        assert getSupportActionBar() != null;
+        int intentLimit = getIntent().getIntExtra(LIMIT, -1);
+        limit = intentLimit > -1? intentLimit : null;
+
+        titleWithLimit = getIntent().getIntExtra(TITLE_WITH_LIMIT, DEFAULT_ID_TITLE_WITH_LIMIT);
+        titleNoLimit = getIntent().getIntExtra(TITLE_NO_LIMIT, DEFAULT_ID_TITLE_NO_LIMIT);
+
+        getSupportActionBar().setTitle(getString(limit != null?
+            titleWithLimit : titleNoLimit, limit));
+
+        isCameraEnabled = getIntent().getBooleanExtra(IS_CAMERA_ENABLED, true);
 
         cameraUtil = new CameraUtils(getActivity(), new CameraCallback() {
             @Override
@@ -48,15 +76,24 @@ public class MultiImagePickerActivity extends BaseActivity {
             .commit();
     }
 
-    public static void startThisActivityForResult(Activity activity, int limit, int code) {
-        activity.startActivityForResult(
-            new Intent(activity, MultiImagePickerActivity.class).putExtra(LIMIT, limit),
-            code);
+    private static void startThisActivityForResult(@NonNull Activity activity,
+                                                   @Nullable Integer limit,
+                                                   boolean enableCamera,
+                                                   @StringRes int titleWithLimitID,
+                                                   @StringRes int titleNoLimitID,
+                                                   int code) {
+        activity.startActivityForResult(new Intent(activity, MultiImagePickerActivity.class)
+                .putExtra(LIMIT, limit)
+                .putExtra(IS_CAMERA_ENABLED, enableCamera)
+                .putExtra(TITLE_WITH_LIMIT, titleWithLimitID)
+                .putExtra(TITLE_NO_LIMIT, titleNoLimitID)
+            , code);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_multi_image_picker, menu);
+        menu.findItem(R.id.action_open_camera).setVisible(isCameraEnabled);
         return true;
     }
 
@@ -97,11 +134,59 @@ public class MultiImagePickerActivity extends BaseActivity {
         cameraUtil.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Callback action when user has successfully captured an image with camera
+     * @param filePath File path to the recently taken image
+     */
     private void actionSetImageResult(@NonNull String filePath) {
         ArrayList<String> imagePaths = new ArrayList<>();
         imagePaths.add(filePath);
         setResult(Activity.RESULT_OK, new Intent().putStringArrayListExtra(
             MultiImagePickerActivity.SELECTED_IMAGE_PATHS, imagePaths));
         finish();
+    }
+
+    public static class Builder {
+
+        @NonNull private Activity activity;
+        private int code;
+        @Nullable private Integer limit;
+        private int current;
+        private boolean enableCamera;
+        @StringRes private int titleWithLimit = DEFAULT_ID_TITLE_WITH_LIMIT;
+        @StringRes private int titleNoLimit = DEFAULT_ID_TITLE_NO_LIMIT;
+
+        public Builder(@NonNull Activity activity, int code) {
+            this.activity = activity;
+            this.code = code;
+        }
+
+        public Builder setLimit(@Nullable Integer limit) {
+            if (limit != null && limit < 0)
+                throw new RuntimeException("Image limit must not be a negative number");
+            this.limit = limit;
+            return this;
+        }
+
+        public Builder setCurrent(int current) {
+            this.current = current;
+            return this;
+        }
+
+        public Builder setCameraEnabled(boolean enabled) {
+            this.enableCamera = enabled;
+            return this;
+        }
+
+        public Builder setTitle(@StringRes int titleWithLimitID, @StringRes int titleNoLimitID) {
+            this.titleWithLimit = titleWithLimitID;
+            this.titleNoLimit = titleNoLimitID;
+            return this;
+        }
+
+        public void build() {
+            MultiImagePickerActivity.startThisActivityForResult(
+                activity, limit, enableCamera, titleWithLimit, titleNoLimit, code);
+        }
     }
 }

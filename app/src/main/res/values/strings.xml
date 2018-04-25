@@ -10,8 +10,12 @@
     <string name="title_activity_multi_image_picker">MultiImagePickerActivity</string>
     <string name="action_camera">Open Camera</string>
     <string name="action_done">Done</string>
-    <string name="choose_image_limit">Choose image (max: %d)</string>
+    <string name="choose_image_limit">Choose images (max: %d)</string>
+    <string name="choose_image_unlimited">Choose images</string>
     <string name="max_limit_reach">Max number of picture reached</string>
+
+    <string name="custom_message_limited">Select multiple images (max: %d)</string>
+    <string name="custom_message_unlimited">Select multiple images</string>
 
     <string name="title_activity_demo">DemoActivity</string>
 

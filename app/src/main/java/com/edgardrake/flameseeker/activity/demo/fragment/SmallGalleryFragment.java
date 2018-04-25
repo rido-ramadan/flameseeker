@@ -78,8 +78,12 @@ public class SmallGalleryFragment extends Fragment {
         mOpenGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MultiImagePickerActivity
-                    .startThisActivityForResult(getActivity(), 100, OPEN_GALLERY);
+                new MultiImagePickerActivity.Builder(getActivity(), OPEN_GALLERY)
+                    .setLimit(null)
+                    .setCurrent(images.size())
+                    .setCameraEnabled(true)
+                    //.setTitle(R.string.custom_message_limited, R.string.custom_message_unlimited)
+                    .build();
             }
         });
     }
