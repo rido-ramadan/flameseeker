@@ -114,7 +114,7 @@ public class DemoActivity extends BaseActivity implements OnNavigationItemSelect
             getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, fragment)
                 .commit();
-        } else {
+        } else if (activeFragment.getClass() != fragment.getClass()) {
             getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -25,13 +26,24 @@ public class MultiImagePickerActivity extends BaseActivity {
     public static final String SELECTED_IMAGE_PATHS = "selected";
     private static final String LIMIT = "limit";
     private static final String IS_CAMERA_ENABLED = "is_camera_enabled";
+    private static final String TITLE_WITH_LIMIT = "title_with_limit";
+    private static final String TITLE_NO_LIMIT = "title_no_limit";
+
+    private static final int DEFAULT_ID_TITLE_WITH_LIMIT = R.string.choose_image_limit;
+    private static final int DEFAULT_ID_TITLE_NO_LIMIT = R.string.choose_image_unlimited;
 
     /**
      * Hard limit of how many images can be taken in a single session
      */
     @Nullable private Integer limit;
     private int current;
+    /**
+     *
+     */
     private boolean isCameraEnabled = true;
+
+    @StringRes private int titleWithLimit;
+    @StringRes private int titleNoLimit;
 
     private CameraUtils cameraUtil;
 
@@ -43,8 +55,12 @@ public class MultiImagePickerActivity extends BaseActivity {
         assert getSupportActionBar() != null;
         int intentLimit = getIntent().getIntExtra(LIMIT, -1);
         limit = intentLimit > -1? intentLimit : null;
+
+        titleWithLimit = getIntent().getIntExtra(TITLE_WITH_LIMIT, DEFAULT_ID_TITLE_WITH_LIMIT);
+        titleNoLimit = getIntent().getIntExtra(TITLE_NO_LIMIT, DEFAULT_ID_TITLE_NO_LIMIT);
+
         getSupportActionBar().setTitle(getString(limit != null?
-            R.string.choose_image_limit : R.string.choose_image_unlimited, limit));
+            titleWithLimit : titleNoLimit, limit));
 
         isCameraEnabled = getIntent().getBooleanExtra(IS_CAMERA_ENABLED, true);
 
@@ -63,11 +79,15 @@ public class MultiImagePickerActivity extends BaseActivity {
     private static void startThisActivityForResult(@NonNull Activity activity,
                                                    @Nullable Integer limit,
                                                    boolean enableCamera,
+                                                   @StringRes int titleWithLimitID,
+                                                   @StringRes int titleNoLimitID,
                                                    int code) {
         activity.startActivityForResult(new Intent(activity, MultiImagePickerActivity.class)
                 .putExtra(LIMIT, limit)
-                .putExtra(IS_CAMERA_ENABLED, enableCamera),
-            code);
+                .putExtra(IS_CAMERA_ENABLED, enableCamera)
+                .putExtra(TITLE_WITH_LIMIT, titleWithLimitID)
+                .putExtra(TITLE_NO_LIMIT, titleNoLimitID)
+            , code);
     }
 
     @Override
@@ -133,6 +153,8 @@ public class MultiImagePickerActivity extends BaseActivity {
         @Nullable private Integer limit;
         private int current;
         private boolean enableCamera;
+        @StringRes private int titleWithLimit = DEFAULT_ID_TITLE_WITH_LIMIT;
+        @StringRes private int titleNoLimit = DEFAULT_ID_TITLE_NO_LIMIT;
 
         public Builder(@NonNull Activity activity, int code) {
             this.activity = activity;
@@ -140,6 +162,8 @@ public class MultiImagePickerActivity extends BaseActivity {
         }
 
         public Builder setLimit(@Nullable Integer limit) {
+            if (limit != null && limit < 0)
+                throw new RuntimeException("Image limit must not be a negative number");
             this.limit = limit;
             return this;
         }
@@ -154,9 +178,15 @@ public class MultiImagePickerActivity extends BaseActivity {
             return this;
         }
 
+        public Builder setTitle(@StringRes int titleWithLimitID, @StringRes int titleNoLimitID) {
+            this.titleWithLimit = titleWithLimitID;
+            this.titleNoLimit = titleNoLimitID;
+            return this;
+        }
+
         public void build() {
             MultiImagePickerActivity.startThisActivityForResult(
-                activity, limit, enableCamera, code);
+                activity, limit, enableCamera, titleWithLimit, titleNoLimit, code);
         }
     }
 }

@@ -14,6 +14,9 @@
     <string name="choose_image_unlimited">Choose images</string>
     <string name="max_limit_reach">Max number of picture reached</string>
 
+    <string name="custom_message_limited">Select multiple images (max: %d)</string>
+    <string name="custom_message_unlimited">Select multiple images</string>
+
     <string name="title_activity_demo">DemoActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

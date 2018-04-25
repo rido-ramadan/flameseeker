@@ -79,10 +79,10 @@ public class SmallGalleryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 new MultiImagePickerActivity.Builder(getActivity(), OPEN_GALLERY)
-                    //.setLimit(null)
-                    .setLimit(10 - images.size())
-                    .setCurrent(0)
-                    .setCameraEnabled(false)
+                    .setLimit(null)
+                    .setCurrent(images.size())
+                    .setCameraEnabled(true)
+                    //.setTitle(R.string.custom_message_limited, R.string.custom_message_unlimited)
                     .build();
             }
         });
